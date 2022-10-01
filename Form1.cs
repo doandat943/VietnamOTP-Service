@@ -14,24 +14,17 @@ namespace VietnamOTP_Service
     {
         public Form1()
         {
-            if (Dns.GetHostAddresses("otp.kamvdta.tk")[0].ToString() == "129.123.12.30")
-            {
-                Application.Exit();
-            }
-            else
-            {
-                Control.CheckForIllegalCrossThreadCalls = false;
-                InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
+            InitializeComponent();
 
-                this.Size = new Size(316, 232);
+            this.Size = new Size(316, 232);
 
-                if (File.Exists(id_path))
-                {
-                    textBox1.Text = File.ReadAllText(id_path);
-                }
+            if (File.Exists(id_path))
+            {
+                textBox1.Text = File.ReadAllText(id_path);
             }
         }
-        
+
         WebClient client = new WebClient();
 
         string status_exam = "Status:  ";
@@ -138,7 +131,7 @@ namespace VietnamOTP_Service
             updater.IsBackground = true;
             updater.Start();
         }
-        
+
         private void update_1()
         {
             string request_ = "";
@@ -227,6 +220,7 @@ namespace VietnamOTP_Service
                     textBox3.Text = otp_code;
 
                     Clipboard.SetText(textBox3.Text);
+
                     request_id = "";
                     status = "";
                     otp_code = "";
@@ -270,7 +264,7 @@ namespace VietnamOTP_Service
                 else
                 {
                     status_title = "Connecting...";
-                }    
+                }
 
                 TimeSpan time = TimeSpan.FromSeconds(timer);
 
