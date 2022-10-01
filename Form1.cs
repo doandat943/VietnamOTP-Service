@@ -35,70 +35,12 @@ namespace VietnamOTP_Service
         string user_id = "";
 
         string request_id = "";
-        string status = "";
+        string status = "0";
         string otp_code = "";
+        int my_balance = 0;
         int timer = 0;
         int dot_counter = 0;
         string dot = "";
-
-        private string request(string link, bool mode)
-        {
-            string request_ = "";
-
-            if (user_id != "")
-            {
-                try
-                {
-                    request_ = client.DownloadString(link);
-                    Match match = Regex.Match(request_, "code\":(.*),\"message");
-                    string status_code = match.Groups[1].Value;
-
-                    if (status_code != "200")
-                    {
-                        if (status_code == "-3")
-                        {
-                            status_label.Text = status_exam + "Out of stock";
-                            if (mode == true) request_ = request(link, mode);
-                        }
-                        else
-                        {
-                            request_ = "";
-
-                            if (status_code == "401")
-                            {
-                                user_id = "";
-                                status_label.Text = status_exam + "Your id cannot be authenticated";
-                            }
-                            else if (status_code == "-30")
-                            {
-                                user_id = "";
-                                status_label.Text = status_exam + "Your id has been blocked";
-                            }
-                            else if (status_code == "-4")
-                            {
-                                checkBox6.Checked = false;
-                                status_label.Text = status_exam + "This phone number is not available";
-                            }
-                            else if (status_code == "-101")
-                            {
-                                status_label.Text = status_exam + "You can't rent this phone number";
-                            }
-                            else
-                            {
-                                status_label.Text = status_exam + "Something went wrong (Code: " + status_code + ")";
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    status_label.Text = status_exam + "Connecting...";
-                    if (mode == true) request_ = request(link, mode);
-                }
-            }
-
-            return request_;
-        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -132,6 +74,72 @@ namespace VietnamOTP_Service
             updater.Start();
         }
 
+        private string request(string link, bool mode)
+        {
+            string request_ = "";
+
+            if (user_id != "")
+            {
+                try
+                {
+                    request_ = client.DownloadString(link);
+                    Match match = Regex.Match(request_, "code\":(.*),\"message");
+                    string status_code = match.Groups[1].Value;
+
+                    if (status_code != "200")
+                    {
+                        if (status_code == "-3")
+                        {
+                            status_label.Text = status_exam + "Out of stock";
+                            if (mode == true)
+                            {
+                                request_ = request(link, mode);
+                                status_label.Text = status_exam + "Connecting...";
+                            }
+                        }
+                        else
+                        {
+                            request_ = "";
+
+                            if (status_code == "401")
+                            {
+                                user_id = "";
+                                status_label.Text = status_exam + "Your id cannot be authenticated";
+                            }
+                            else if (status_code == "-30")
+                            {
+                                user_id = "";
+                                status_label.Text = status_exam + "Your id has been blocked";
+                            }
+                            else if (status_code == "-4")
+                            {
+                                checkBox6.Checked = false;
+                                status_label.Text = status_exam + "This phone number is not available";
+                            }
+                            else if (status_code == "-101")
+                            {
+                                status_label.Text = status_exam + "You can't rent this phone number";
+                            }
+                            else
+                            {
+                                status_label.Text = status_exam + "Something went wrong (Code: " + status_code + ")";
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    if (mode == true)
+                    {
+                        request_ = request(link, mode);
+                        status_label.Text = status_exam + "Connecting...";
+                    }
+                }
+            }
+
+            return request_;
+        }
+
         private void update_1()
         {
             string request_ = "";
@@ -148,48 +156,56 @@ namespace VietnamOTP_Service
                     Match match2 = Regex.Match(request_, "Code\":\"(.*)\",\"PhoneOriginal");
                     otp_code = match2.Groups[1].Value;
                 }
+                else
+                {
+                    status = "";
+                    otp_code = "";
+                }
             }
 
             // get balance
 
-            request_ = request("https://api.viotp.com/users/balance?token=" + user_id, false);
-            if (request_ != "")
+            if (user_id != "")
             {
-                Match match1 = Regex.Match(request_, "balance\":(.*)}}");
-                string balance = match1.Groups[1].Value;
-
-                if (Int32.TryParse(balance, out int my_balance))
+                request_ = request("https://api.viotp.com/users/balance?token=" + user_id, false);
+                if (request_ != "")
                 {
-                    balance_label.Text = String.Format("{0:n0}", Convert.ToInt64(my_balance)) + " VND";
+                    Match match1 = Regex.Match(request_, "balance\":(.*)}}");
+                    string balance = match1.Groups[1].Value;
 
-                    if (request_id != "")
+                    if (Int32.TryParse(balance, out my_balance))
                     {
-                        generate_button.Enabled = false;
-                        textBox1.Enabled = false;
-                        login_button.Enabled = false;
-                    }
-                    else if (request_id == "")
-                    {
-                        if (my_balance >= 1000)
+                        balance_label.Text = String.Format("{0:n0}", Convert.ToInt64(my_balance)) + " VND";
+
+                        if (request_id != "")
                         {
-                            generate_button.Enabled = true;
+                            generate_button.Enabled = false;
                             textBox1.Enabled = false;
                             login_button.Enabled = false;
                         }
-                        else if (my_balance < 1000)
+                        else if (request_id == "")
                         {
-                            generate_button.Enabled = false;
-                            textBox1.Enabled = true;
-                            login_button.Enabled = true;
+                            if (my_balance >= 1000)
+                            {
+                                generate_button.Enabled = true;
+                                textBox1.Enabled = false;
+                                login_button.Enabled = false;
+                            }
+                            else if (my_balance < 1000)
+                            {
+                                generate_button.Enabled = false;
+                                textBox1.Enabled = true;
+                                login_button.Enabled = true;
+                            }
                         }
                     }
+                    else
+                    {
+                        generate_button.Enabled = false;
+                        textBox1.Enabled = true;
+                        login_button.Enabled = true;
+                    }
                 }
-            }
-            else
-            {
-                generate_button.Enabled = false;
-                textBox1.Enabled = true;
-                login_button.Enabled = true;
             }
         }
 
@@ -207,8 +223,7 @@ namespace VietnamOTP_Service
                 checkBox6.Enabled = true;
             }
 
-            // check code coming
-
+            // check otp code coming
 
             if (request_id != "")
             {
@@ -222,7 +237,7 @@ namespace VietnamOTP_Service
                     Clipboard.SetText(textBox3.Text);
 
                     request_id = "";
-                    status = "";
+                    status = "0";
                     otp_code = "";
                     dot_counter = 0;
                     dot = "";
@@ -237,7 +252,7 @@ namespace VietnamOTP_Service
                     textBox2.Text = "Number";
 
                     request_id = "";
-                    status = "";
+                    status = "0";
                     otp_code = "";
                     dot_counter = 0;
                     dot = "";
@@ -246,9 +261,19 @@ namespace VietnamOTP_Service
                     player.Play();
                     status_title = "Expired";
                 }
-                else if (status == "0")
+                else
                 {
                     timer++;
+
+                    if (status == "0")
+                    {
+                        status_title = "Waiting ";
+                    }
+                    else
+                    {
+                        status_title = "Connecting ";
+                    }
+
                     if (dot_counter++ < 3)
                     {
                         dot += ".";
@@ -258,12 +283,7 @@ namespace VietnamOTP_Service
                         dot = "";
                         dot_counter = 0;
                     }
-
-                    status_title = "Waiting " + dot;
-                }
-                else
-                {
-                    status_title = "Connecting...";
+                    status_title += dot;
                 }
 
                 TimeSpan time = TimeSpan.FromSeconds(timer);
@@ -279,7 +299,7 @@ namespace VietnamOTP_Service
 
             update_1();
 
-            if (comboBox1.Items.Count == 0)
+            if (comboBox1.Items.Count == 0 && user_id != "")
             {
                 string request_ = request("https://api.viotp.com/service/getv2?token=" + user_id + "&country=vn", true);
                 if (request_ != "")
