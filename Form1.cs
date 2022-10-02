@@ -33,6 +33,7 @@ namespace VietnamOTP_Service
         ArrayList service_list = new ArrayList();
         int selected_service = 0;
         string user_id = "";
+        bool user_id_status = false;
 
         string request_id = "";
         string status = "0";
@@ -109,6 +110,7 @@ namespace VietnamOTP_Service
                             else if (status_code == "-30")
                             {
                                 user_id = "";
+                                generate_button.Enabled = false;
                                 status_label.Text = status_exam + "Your id has been blocked";
                             }
                             else if (status_code == "-4")
@@ -140,7 +142,7 @@ namespace VietnamOTP_Service
             return request_;
         }
 
-        private void update_1()
+        private void update_1() // full return data
         {
             string request_ = "";
 
@@ -177,40 +179,45 @@ namespace VietnamOTP_Service
                     {
                         balance_label.Text = String.Format("{0:n0}", Convert.ToInt64(my_balance)) + " VND";
 
-                        if (request_id != "")
-                        {
-                            generate_button.Enabled = false;
-                            textBox1.Enabled = false;
-                            login_button.Enabled = false;
-                        }
-                        else if (request_id == "")
+                        if (request_id == "")
                         {
                             if (my_balance >= 1000)
                             {
-                                generate_button.Enabled = true;
-                                textBox1.Enabled = false;
-                                login_button.Enabled = false;
+                                user_id_status = true;
                             }
                             else if (my_balance < 1000)
                             {
-                                generate_button.Enabled = false;
-                                textBox1.Enabled = true;
-                                login_button.Enabled = true;
+                                user_id_status = false;
                             }
                         }
                     }
-                    else
-                    {
-                        generate_button.Enabled = false;
-                        textBox1.Enabled = true;
-                        login_button.Enabled = true;
-                    }
+
+                    
                 }
+            }
+            else
+            {
+                user_id_status = false;
             }
         }
 
         private void update_2()
         {
+            // check account status
+
+            if (user_id_status == true)
+            {
+                generate_button.Enabled = true;
+                textBox1.Enabled = false;
+                login_button.Enabled = false;
+            }
+            else if (user_id_status == false)
+            {
+                generate_button.Enabled = false;
+                textBox1.Enabled = true;
+                login_button.Enabled = true;
+            }
+
             // check re number textbox
 
             if (textBox4.Text == "")
@@ -308,7 +315,7 @@ namespace VietnamOTP_Service
                     string[] service_list_raw = request_.Split('|');
                     string[] a = {
                         "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba",
-                        "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack"
+                        "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack", "Hao Hao"
                     };
 
                     foreach (string service_info in service_list_raw)
@@ -366,11 +373,12 @@ namespace VietnamOTP_Service
                 Match match2 = Regex.Match(request_, "request_id\":(.*),\"balance");
                 request_id = match2.Groups[1].Value;
 
+                textBox4.Text = number;
+
                 number = "0" + String.Format("{0:####-###-###}", Convert.ToInt64(number));
 
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
                 textBox2.Text = number;
-                textBox4.Text = number;
                 Clipboard.SetText(textBox2.Text);
 
                 textBox3.BackColor = SystemColors.Window;
