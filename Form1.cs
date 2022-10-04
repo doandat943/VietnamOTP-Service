@@ -106,14 +106,12 @@ namespace VietnamOTP_Service
                             {
                                 user_id = "";
                                 user_id_status = false;
-                                generate_button.Enabled = false;
                                 status_label.Text = status_exam + "Your id cannot be authenticated";
                             }
                             else if (status_code == "-30")
                             {
                                 user_id = "";
                                 user_id_status = false;
-                                generate_button.Enabled = false;
                                 status_label.Text = status_exam + "Your id has been blocked";
                             }
                             else if (status_code == "-4")
@@ -206,8 +204,6 @@ namespace VietnamOTP_Service
 
         private void update_2()
         {
-            timer++;
-
             // check account status
 
             if (user_id_status == true)
@@ -275,6 +271,8 @@ namespace VietnamOTP_Service
                 }
                 else
                 {
+                    timer++;
+
                     if (status == "0")
                     {
                         status_title = "Waiting ";
@@ -304,9 +302,9 @@ namespace VietnamOTP_Service
 
         private void login()
         {
-            login_button.Enabled = false;
             user_id = textBox1.Text;
 
+            update_2();
             update_1();
 
             if (comboBox1.Items.Count == 0 && user_id != "")
@@ -348,7 +346,6 @@ namespace VietnamOTP_Service
 
         private void generate()
         {
-            generate_button.Enabled = false;
             timer = -1;
 
             // get selected service
