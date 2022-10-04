@@ -26,15 +26,15 @@ namespace VietnamOTP_Service
         }
 
         WebClient client = new WebClient();
+        ArrayList service_list = new ArrayList();
 
         string status_exam = "Status:  ";
         string id_path = Path.GetTempPath() + "uuid.otp";
 
-        ArrayList service_list = new ArrayList();
-        int selected_service = 0;
         string user_id = "";
         bool user_id_status = false;
 
+        int selected_service = 0;
         string request_id = "";
         string status = "0";
         string otp_code = "";
@@ -105,11 +105,14 @@ namespace VietnamOTP_Service
                             if (status_code == "401")
                             {
                                 user_id = "";
+                                user_id_status = false;
+                                generate_button.Enabled = false;
                                 status_label.Text = status_exam + "Your id cannot be authenticated";
                             }
                             else if (status_code == "-30")
                             {
                                 user_id = "";
+                                user_id_status = false;
                                 generate_button.Enabled = false;
                                 status_label.Text = status_exam + "Your id has been blocked";
                             }
@@ -142,7 +145,7 @@ namespace VietnamOTP_Service
             return request_;
         }
 
-        private void update_1() // full return data
+        private void update_1()
         {
             string request_ = "";
 
@@ -192,7 +195,7 @@ namespace VietnamOTP_Service
                         }
                     }
 
-                    
+
                 }
             }
             else
@@ -203,6 +206,8 @@ namespace VietnamOTP_Service
 
         private void update_2()
         {
+            timer++;
+
             // check account status
 
             if (user_id_status == true)
@@ -222,8 +227,8 @@ namespace VietnamOTP_Service
 
             if (textBox4.Text == "")
             {
-                checkBox6.Checked = false;
                 checkBox6.Enabled = false;
+                checkBox6.Checked = false;
             }
             else
             {
@@ -270,8 +275,6 @@ namespace VietnamOTP_Service
                 }
                 else
                 {
-                    timer++;
-
                     if (status == "0")
                     {
                         status_title = "Waiting ";
@@ -346,7 +349,7 @@ namespace VietnamOTP_Service
         private void generate()
         {
             generate_button.Enabled = false;
-            timer = 0;
+            timer = -1;
 
             // get selected service
 
