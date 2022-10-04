@@ -373,13 +373,13 @@ namespace VietnamOTP_Service
                 Match match2 = Regex.Match(request_, "request_id\":(.*),\"balance");
                 request_id = match2.Groups[1].Value;
 
-                textBox4.Text = number;
+                Clipboard.SetText(number);
 
                 number = "0" + String.Format("{0:####-###-###}", Convert.ToInt64(number));
 
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
                 textBox2.Text = number;
-                Clipboard.SetText(textBox2.Text);
+                textBox4.Text = number;
 
                 textBox3.BackColor = SystemColors.Window;
                 textBox3.Text = "OTP Code";
