@@ -19,17 +19,17 @@ namespace VietnamOTP_Service
 
             this.Size = new Size(316, 232);
 
-            if (File.Exists(id_path))
+            if (File.Exists(uuid_path))
             {
-                textBox1.Text = File.ReadAllText(id_path);
+                textBox1.Text = File.ReadAllText(uuid_path);
             }
         }
 
         WebClient client = new WebClient();
         ArrayList service_list = new ArrayList();
 
-        string status_exam = "Status:  ";
-        string id_path = Path.GetTempPath() + "uuid.otp";
+        string exam_status = "Status:  ";
+        string uuid_path = Path.GetTempPath() + "uuid.otp";
 
         string user_id = "";
         bool user_id_status = false;
@@ -91,11 +91,11 @@ namespace VietnamOTP_Service
                     {
                         if (status_code == "-3")
                         {
-                            status_label.Text = status_exam + "Out of stock";
+                            status_label.Text = exam_status + "Out of stock";
                             if (mode == true)
                             {
                                 request_ = request(link, mode);
-                                status_label.Text = status_exam + "Connecting...";
+                                status_label.Text = exam_status + "Connecting...";
                             }
                         }
                         else
@@ -106,26 +106,27 @@ namespace VietnamOTP_Service
                             {
                                 user_id = "";
                                 user_id_status = false;
-                                status_label.Text = status_exam + "Your id cannot be authenticated";
+                                status_label.Text = exam_status + "Your id cannot be authenticated";
                             }
                             else if (status_code == "-30")
                             {
                                 user_id = "";
                                 user_id_status = false;
-                                status_label.Text = status_exam + "Your id has been blocked";
+                                status_label.Text = exam_status + "Your id has been blocked";
                             }
                             else if (status_code == "-4")
                             {
                                 checkBox6.Checked = false;
-                                status_label.Text = status_exam + "This phone number is not available";
+                                status_label.Text = exam_status + "This phone number is not available";
                             }
                             else if (status_code == "-101")
                             {
-                                status_label.Text = status_exam + "You can't rent this phone number";
+                                checkBox6.Checked = false;
+                                status_label.Text = exam_status + "You can't rent this phone number";
                             }
                             else
                             {
-                                status_label.Text = status_exam + "Something went wrong (Code: " + status_code + ")";
+                                status_label.Text = exam_status + "Something went wrong (Code: " + status_code + ")";
                             }
                         }
                     }
@@ -135,7 +136,7 @@ namespace VietnamOTP_Service
                     if (mode == true)
                     {
                         request_ = request(link, mode);
-                        status_label.Text = status_exam + "Connecting...";
+                        status_label.Text = exam_status + "Connecting...";
                     }
                 }
             }
@@ -180,25 +181,20 @@ namespace VietnamOTP_Service
                     {
                         balance_label.Text = String.Format("{0:n0}", Convert.ToInt64(my_balance)) + " VND";
 
-                        if (request_id == "")
+                        if (my_balance >= 1000)
                         {
-                            if (my_balance >= 1000)
-                            {
-                                user_id_status = true;
-                            }
-                            else if (my_balance < 1000)
-                            {
-                                user_id_status = false;
-                            }
+                            user_id_status = true;
+                        }
+                        else if (my_balance < 1000)
+                        {
+                            user_id_status = false;
                         }
                     }
-
-
                 }
-            }
-            else
-            {
-                user_id_status = false;
+                else
+                {
+                    user_id_status = false;
+                }
             }
         }
 
@@ -296,7 +292,7 @@ namespace VietnamOTP_Service
 
                 TimeSpan time = TimeSpan.FromSeconds(timer);
 
-                status_label.Text = status_exam + time.ToString() + "  |  ID" + (selected_service + 1).ToString("00") + "  |  " + status_title;
+                status_label.Text = exam_status + time.ToString() + "  |  ID" + (selected_service + 1).ToString("00") + "  |  " + status_title;
             }
         }
 
@@ -304,7 +300,6 @@ namespace VietnamOTP_Service
         {
             user_id = textBox1.Text;
 
-            update_2();
             update_1();
 
             if (comboBox1.Items.Count == 0 && user_id != "")
@@ -338,8 +333,8 @@ namespace VietnamOTP_Service
                         comboBox1.SelectedIndex = 0;
                     }
 
-                    status_label.Text = status_exam + "Welcome to VietnamOTP";
-                    File.WriteAllText(id_path, user_id);
+                    status_label.Text = exam_status + "Welcome to VietnamOTP";
+                    File.WriteAllText(uuid_path, user_id);
                 }
             }
         }
