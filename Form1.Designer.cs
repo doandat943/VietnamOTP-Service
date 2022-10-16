@@ -43,7 +43,7 @@
             this.status_label = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.balance_label = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
+            this.expand_button = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -53,6 +53,7 @@
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,15 +186,15 @@
             this.balance_label.Text = "VND";
             this.balance_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button3
+            // expand_button
             // 
-            this.button3.Location = new System.Drawing.Point(271, 43);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(18, 54);
-            this.button3.TabIndex = 7;
-            this.button3.Text = ">";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.expand_button.Location = new System.Drawing.Point(271, 43);
+            this.expand_button.Name = "expand_button";
+            this.expand_button.Size = new System.Drawing.Size(18, 54);
+            this.expand_button.TabIndex = 7;
+            this.expand_button.Text = ">";
+            this.expand_button.UseVisualStyleBackColor = true;
+            this.expand_button.Click += new System.EventHandler(this.expand_button_Click);
             // 
             // flowLayoutPanel1
             // 
@@ -298,6 +299,12 @@
             this.timer2.Interval = 1000;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
+            // timer3
+            // 
+            this.timer3.Enabled = true;
+            this.timer3.Interval = 500;
+            this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -306,7 +313,7 @@
             this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.expand_button);
             this.Controls.Add(this.balance_label);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.status_label);
@@ -348,7 +355,7 @@
         private System.Windows.Forms.Label status_label;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label balance_label;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button expand_button;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
@@ -358,6 +365,7 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.CheckBox checkBox6;
         private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.Timer timer3;
     }
 }
 
