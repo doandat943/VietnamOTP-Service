@@ -25,25 +25,6 @@ namespace VietnamOTP_Service
             }
         }
 
-        WebClient client = new WebClient();
-        ArrayList service_list = new ArrayList();
-
-        string exam_status = "Status:  ";
-        string uuid_path = Path.GetTempPath() + "uuid.otp";
-
-        string user_id = "";
-        int user_balance = 0;
-        bool user_status = false;
-
-        int session_service = 0;
-        string session_id = "";
-        string session_status = "0";
-        string session_code = "";
-
-        int timer = 0;
-        int dot_counter = 0;
-        string dot = "";
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             Thread updater = new Thread(update_1);
@@ -82,6 +63,25 @@ namespace VietnamOTP_Service
             updater.IsBackground = true;
             updater.Start();
         }
+
+        WebClient client = new WebClient();
+        ArrayList service_list = new ArrayList();
+
+        string exam_status = "Status:  ";
+        string uuid_path = Path.GetTempPath() + "uuid.otp";
+
+        string user_id = "";
+        int user_balance = 0;
+        bool user_status = false;
+
+        int session_service = 0;
+        string session_id = "";
+        string session_status = "0";
+        string session_code = "";
+
+        int timer = 0;
+        int dot_counter = 0;
+        string dot = "";
 
         private string request(string link, bool mode)
         {
@@ -283,14 +283,20 @@ namespace VietnamOTP_Service
                 textBox1.Enabled = false;
                 login_button.Enabled = false;
             }
-            else if (user_status == false)
+            else if (user_status == false && session_id != "")
+            {
+                generate_button.Enabled = false;
+                textBox1.Enabled = false;
+                login_button.Enabled = false;
+            }
+            else if (user_status == false && session_id == "")
             {
                 generate_button.Enabled = false;
                 textBox1.Enabled = true;
                 login_button.Enabled = true;
             }
 
-            // check re number textbox
+            // check renumber textbox
 
             if (textBox4.Text == "")
             {
@@ -337,7 +343,7 @@ namespace VietnamOTP_Service
 
                     if (comboBox1.Items.Count > 0)
                     {
-                        comboBox1.SelectedIndex = 0;
+                        comboBox1.SelectedIndex = session_service;
                     }
 
                     status_label.Text = exam_status + "Welcome to VietnamOTP";
