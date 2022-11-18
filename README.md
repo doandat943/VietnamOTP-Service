@@ -9,8 +9,8 @@ Project: Receive OTP (SMS) Application
 ## Feature
 - Get otp so quickly
 - What number you can get (number supplier): 
-1. *Vietnam* (`Viettel`, `Vinaphone`, `Mobiphone`, `Vietnamobile`, `ITELECOM`)
-2. *Romania* (`VODAFONE`)
+1. **Vietnam** (`Viettel`, `Vinaphone`, `Mobiphone`, `Vietnamobile`, `ITELECOM`)
+2. **Romania** (`VODAFONE`)
 - What service you can using for: `Google`, `Microsoft`, `Telegram`, `Discord`, ...
 
 You can check in this list [Listed Here](https://pastebin.com/raw/gFmEbcfV)
