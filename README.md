@@ -12,8 +12,9 @@ Project: Receive SMS Application
 > Vietnam (Viettel, Vinaphone, Mobiphone, Vietnamobile, ITELECOM)
 
 > Romania (VODAFONE)
-- What service you can using for:
--- [Listed Here](https://pastebin.com/raw/gFmEbcfV)
+- What service you can using for: Google, Microsoft,Telegram, Discord, etc
+
+ [Listed Here](https://pastebin.com/raw/gFmEbcfV)
 
 ## How to use
 What you need:
