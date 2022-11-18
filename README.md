@@ -17,8 +17,8 @@ You can check in this list [Listed Here](https://pastebin.com/raw/gFmEbcfV)
 
 ## How to use
 What you need:
-1. ViOTP account: [Register Now](https://viotp.com/Account/Register)
-2. Go here to get your token: [Get Token](https://viotp.com/Account/ApiDocument2)
+1. ViOTP account: [Register now](https://viotp.com/Account/Register)
+2. Go here to get your token: [Get token](https://viotp.com/Account/ApiDocument2)
 3. This service need charge, 1SMS (1 number) = 1000 VND so with 1$ you can get 20 SMS
 
 - or you can try with my token: 
