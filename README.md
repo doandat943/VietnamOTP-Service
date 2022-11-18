@@ -1,9 +1,14 @@
 ## VietnamOTP-Service
 Project: Receive SMS Application
 
+## Technology
+```Language: C#```
+
+```API: https://viotp.com```
+
 ## Feature
 - Get otp so quickly
-- What number you can get: 
+- What number you can get (number supplier): 
 > Vietnam (Viettel, Vinaphone, Mobiphone, Vietnamobile, ITELECOM)
 
 > Romania (VODAFONE)
@@ -20,12 +25,10 @@ What you need:
 ```
 f86d615a10ad420da39f6a4484ff2ad9
 ```
-4. Enter token to `Textbox`, select service you want or network
-
-- What 
-## Technology
-```Language: C#```
-```API: https://viotp.com```
+4. Enter token to `Textbox` and click login
+> Tips: 
+> Click `>` button to expand `number supplier` feature
+> Use list from bottom to select service
 
 ## Screenshot
 ![Screenshot](https://i.paste.pics/0d56c5a74e0c50a5589d8b315c28be69.png)
