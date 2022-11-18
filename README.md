@@ -1,6 +1,13 @@
 ## VietnamOTP-Service
 Project: Receive SMS Application
-Ứng dụng thuê số điện thoại để nhận mã OTP sử dụng viOTP API
+
+## Feature
+- Get otp so quickly
+- What number you can get: 
+-- Vietnam (Viettel, Vinaphone, Mobiphone, Vietnamobile, ITELECOM)
+-- Romania (VODAFONE)
+- What service you can using for:
+-- ```[Listed Here](https://pastebin.com/raw/gFmEbcfV)```
 
 ## How to use
 What you need:
@@ -12,7 +19,9 @@ What you need:
 ```
 f86d615a10ad420da39f6a4484ff2ad9
 ```
+4. Enter token to `Textbox`, select service you want or network
 
+- What 
 ## Technology
 ```Language: C#```
 ```API: https://viotp.com```
