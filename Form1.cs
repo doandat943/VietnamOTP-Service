@@ -68,14 +68,15 @@ namespace VietnamOTP_Service
         ArrayList service_list = new ArrayList();
 
         string exam_status = "Status:  ";
-        string uuid_path = Path.GetTempPath() + "uuid.otp";
+        string uuid_path = Path.GetTempPath() + "token.otp";
 
         string user_id = "";
-        int user_balance = 0;
         bool user_status = false;
+        int user_balance = 0;
 
         int session_service = 0;
         string session_id = "";
+        string session_number = "";
         string session_status = "0";
         string session_code = "";
 
@@ -124,12 +125,12 @@ namespace VietnamOTP_Service
                             }
                             else if (status_code == "-4")
                             {
-                                checkBox6.Checked = false;
+                                checkBox.Checked = false;
                                 status_label.Text = exam_status + "This phone number is not available";
                             }
                             else if (status_code == "-101")
                             {
-                                checkBox6.Checked = false;
+                                checkBox.Checked = false;
                                 status_label.Text = exam_status + "You can't rent this phone number";
                             }
                             else
@@ -215,13 +216,9 @@ namespace VietnamOTP_Service
                     textBox3.BackColor = Color.FromArgb(255, 192, 192);
                     textBox3.Text = session_code;
 
-                    Clipboard.SetText(textBox3.Text);
+                    Clipboard.SetText(session_code);
 
-                    session_id = "";
-                    session_status = "0";
-                    session_code = "";
-                    dot_counter = 0;
-                    dot = "";
+                    new_session();
 
                     System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Windows Print complete.wav");
                     player.Play();
@@ -232,11 +229,7 @@ namespace VietnamOTP_Service
                     textBox2.BackColor = SystemColors.Window;
                     textBox2.Text = "Number";
 
-                    session_id = "";
-                    session_status = "0";
-                    session_code = "";
-                    dot_counter = 0;
-                    dot = "";
+                    new_session();
 
                     System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Speech On.wav");
                     player.Play();
@@ -283,30 +276,32 @@ namespace VietnamOTP_Service
                 textBox1.Enabled = false;
                 login_button.Enabled = false;
             }
-            else if (user_status == false && session_id != "")
-            {
-                generate_button.Enabled = false;
-                textBox1.Enabled = false;
-                login_button.Enabled = false;
-            }
-            else if (user_status == false && session_id == "")
-            {
-                generate_button.Enabled = false;
-                textBox1.Enabled = true;
-                login_button.Enabled = true;
-            }
-
-            // check renumber textbox
-
-            if (textBox4.Text == "")
-            {
-                checkBox6.Enabled = false;
-                checkBox6.Checked = false;
-            }
             else
             {
-                checkBox6.Enabled = true;
+                if (session_id == "")
+                {
+                    generate_button.Enabled = false;
+                    textBox1.Enabled = true;
+                    login_button.Enabled = true;
+                }
+                else
+                {
+                    generate_button.Enabled = false;
+                    textBox1.Enabled = false;
+                    login_button.Enabled = false;
+                }
             }
+        }
+
+        private void new_session()
+        {
+            session_id = "";
+            session_number = "";
+            session_status = "0";
+            session_code = "";
+
+            dot_counter = 0;
+            dot = "";
         }
 
         private void login()
@@ -322,26 +317,53 @@ namespace VietnamOTP_Service
                 {
                     request_ = Regex.Replace(request_, "{.*\\[", "").Replace("},{", "|").Replace("{", "").Replace("}]}", "");
                     string[] service_list_raw = request_.Split('|');
-                    string[] a = {
-                        "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba",
-                        "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack", "Hao Hao"
+                    string[] a =
+                    {
+                        "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba", "Uber", "Viber", "Paypal", "Zoho", "Lotteria", "Microsoft", 
+                        "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack", "Hao Hao", "VinID", "Gojek", "Grab", "Amazon", "Instagram",
+                        "WhatsApp", "Twitter", "Apple ID"
+                    };
+                    string[] b =
+                    {
+                        "OTHER"
                     };
 
                     foreach (string service_info in service_list_raw)
                     {
                         if (a.Any(service_info.Contains))
                         {
+                            service_list.Add(service_info);
+
                             Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
                             string service_name = match1.Groups[1].Value;
                             Match match2 = Regex.Match(service_info, "price\":(.*)");
-                            string service_price = match2.Groups[1].Value;
+                            string service_price = String.Format("{0:n0}", Convert.ToDecimal(match2.Groups[1].Value));
+                            if (service_price.Count() <= 3) service_price = "   " + service_price;
+
+                            comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
+                        }
+                    }
+                    foreach (string service_info in service_list_raw)
+                    {
+                        if (b.Any(service_info.Contains))
+                        {
                             service_list.Add(service_info);
 
-                            comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + String.Format("{0:n0}", Convert.ToInt64(service_price)) + " VND  |  " + service_name);
+                            Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
+                            string service_name = match1.Groups[1].Value;
+                            if (service_name.Contains("OTHER"))
+                            {
+                                service_name = "------          Other Service          ------";
+                            }
+                            Match match2 = Regex.Match(service_info, "price\":(.*)");
+                            string service_price = String.Format("{0:n0}", Convert.ToDecimal(match2.Groups[1].Value));
+                            if (service_price.Count() <= 3) service_price = "   " + service_price;
+
+                            comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
                         }
                     }
 
-                    if (comboBox1.Items.Count > 0)
+                    if (comboBox1.Items.Count != 0)
                     {
                         comboBox1.SelectedIndex = session_service;
                     }
@@ -365,9 +387,9 @@ namespace VietnamOTP_Service
 
             string request_ = "https://api.viotp.com/request/getv2?token=" + user_id + "&serviceId=" + service_id;
 
-            if (checkBox6.Checked == true)
+            if (checkBox.Checked == true)
             {
-                request_ = request(request_ + "&number=" + textBox4.Text.Replace("-", ""), true);
+                request_ = request(request_ + "&number=" + textBox2.Text.Replace("-", ""), true);
             }
             else
             {
@@ -379,20 +401,23 @@ namespace VietnamOTP_Service
             if (request_ != "")
             {
                 Match match1 = Regex.Match(request_, "re_phone_number\":\"(.*)\",\"countryISO");
-                string number = match1.Groups[1].Value;
+                session_number = match1.Groups[1].Value;
                 Match match2 = Regex.Match(request_, "request_id\":(.*),\"balance");
                 session_id = match2.Groups[1].Value;
 
-                Clipboard.SetText(number);
+                Clipboard.SetText(session_number);
 
-                number = "0" + String.Format("{0:####-###-###}", Convert.ToInt64(number));
+                session_number = "0" + String.Format("{0:####-###-###}", Convert.ToInt64(session_number));
 
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
-                textBox2.Text = number;
-                textBox4.Text = number;
+                textBox2.Text = session_number;
 
                 textBox3.BackColor = SystemColors.Window;
                 textBox3.Text = "OTP Code";
+            }
+            else
+            {
+                new_session();
             }
         }
 
@@ -410,7 +435,7 @@ namespace VietnamOTP_Service
             }
         }
 
-        private void textBox4_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
@@ -432,8 +457,9 @@ namespace VietnamOTP_Service
         int check3 = 0;
         int check4 = 0;
         int check5 = 0;
+        int check6 = 0;
 
-        private int CheckBoxMOD(CheckBox a, int b)
+        private int checkBoxMOD(CheckBox a, int b)
         {
             if (a.CheckState == CheckState.Unchecked && b == 0)
             {
@@ -447,86 +473,115 @@ namespace VietnamOTP_Service
             }
 
             network = "";
-            if (checkBox1.CheckState == CheckState.Checked)
+
+            if (network1.CheckState == CheckState.Checked)
             {
                 network += "VIETTEL|";
             }
-            else if (checkBox2.CheckState == CheckState.Checked)
+            else if (network2.CheckState == CheckState.Checked)
             {
                 network += "VINAPHONE|";
             }
-            else if (checkBox3.CheckState == CheckState.Checked)
+            else if (network3.CheckState == CheckState.Checked)
             {
                 network += "MOBIFONE|";
             }
-            else if (checkBox4.CheckState == CheckState.Checked)
+            else if (network4.CheckState == CheckState.Checked)
             {
                 network += "VIETNAMOBILE|";
             }
-            else if (checkBox5.CheckState == CheckState.Checked)
+            else if (network5.CheckState == CheckState.Checked)
             {
                 network += "ITELECOM|";
+            }
+            else if (network6.CheckState == CheckState.Checked)
+            {
+                network += "VODAFONE|";
             }
             return b;
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void network1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox2.CheckState == CheckState.Indeterminate && checkBox3.CheckState == CheckState.Indeterminate && checkBox4.CheckState == CheckState.Indeterminate && checkBox5.CheckState == CheckState.Indeterminate)
+            if (network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
             {
-                checkBox1.Checked = true;
+                network1.Checked = true;
             }
             else
             {
-                check1 = CheckBoxMOD(checkBox1, check1);
+                check1 = checkBoxMOD(network1, check1);
             }
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void network2_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.CheckState == CheckState.Indeterminate && checkBox3.CheckState == CheckState.Indeterminate && checkBox4.CheckState == CheckState.Indeterminate && checkBox5.CheckState == CheckState.Indeterminate)
+            if (network1.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
             {
-                checkBox2.Checked = true;
+                network2.Checked = true;
             }
             else
             {
-                check2 = CheckBoxMOD(checkBox2, check2);
+                check2 = checkBoxMOD(network2, check2);
             }
         }
 
-        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        private void network3_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.CheckState == CheckState.Indeterminate && checkBox2.CheckState == CheckState.Indeterminate && checkBox4.CheckState == CheckState.Indeterminate && checkBox5.CheckState == CheckState.Indeterminate)
+            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
             {
-                checkBox3.Checked = true;
+                network3.Checked = true;
             }
             else
             {
-                check3 = CheckBoxMOD(checkBox3, check3);
+                check3 = checkBoxMOD(network3, check3);
             }
         }
 
-        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        private void network4_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.CheckState == CheckState.Indeterminate && checkBox2.CheckState == CheckState.Indeterminate && checkBox3.CheckState == CheckState.Indeterminate && checkBox5.CheckState == CheckState.Indeterminate)
+            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
             {
-                checkBox4.Checked = true;
+                network4.Checked = true;
             }
             else
             {
-                check4 = CheckBoxMOD(checkBox4, check4);
+                check4 = checkBoxMOD(network4, check4);
             }
         }
 
-        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        private void network5_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.CheckState == CheckState.Indeterminate && checkBox2.CheckState == CheckState.Indeterminate && checkBox3.CheckState == CheckState.Indeterminate && checkBox4.CheckState == CheckState.Indeterminate)
+            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
             {
-                checkBox5.Checked = true;
+                network5.Checked = true;
             }
             else
             {
-                check5 = CheckBoxMOD(checkBox5, check5);
+                check5 = checkBoxMOD(network5, check5);
+            }
+        }
+
+        private void network6_CheckedChanged(object sender, EventArgs e)
+        {
+            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate)
+            {
+                network6.Checked = true;
+            }
+            else
+            {
+                check6 = checkBoxMOD(network6, check6);
+            }
+        }
+
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox.Checked == true)
+            {
+                textBox2.Enabled = true;
+            }
+            else
+            {
+                textBox2.Enabled = false;
             }
         }
     }

@@ -45,15 +45,16 @@
             this.balance_label = new System.Windows.Forms.Label();
             this.expand_button = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.network1 = new System.Windows.Forms.CheckBox();
+            this.network2 = new System.Windows.Forms.CheckBox();
+            this.network3 = new System.Windows.Forms.CheckBox();
+            this.network4 = new System.Windows.Forms.CheckBox();
+            this.network5 = new System.Windows.Forms.CheckBox();
+            this.network6 = new System.Windows.Forms.CheckBox();
+            this.checkBox = new System.Windows.Forms.CheckBox();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.timer3 = new System.Windows.Forms.Timer(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,7 +85,7 @@
             this.label2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label2.Location = new System.Drawing.Point(13, 135);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 18);
+            this.label2.Size = new System.Drawing.Size(60, 18);
             this.label2.TabIndex = 0;
             this.label2.Text = "Balance";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -116,6 +117,7 @@
             this.textBox2.Size = new System.Drawing.Size(190, 20);
             this.textBox2.TabIndex = 0;
             this.textBox2.Text = "Number";
+            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox2_KeyPress);
             // 
             // button1
             // 
@@ -199,99 +201,107 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flowLayoutPanel1.Controls.Add(this.checkBox1);
-            this.flowLayoutPanel1.Controls.Add(this.checkBox2);
-            this.flowLayoutPanel1.Controls.Add(this.checkBox3);
-            this.flowLayoutPanel1.Controls.Add(this.checkBox4);
-            this.flowLayoutPanel1.Controls.Add(this.checkBox5);
+            this.flowLayoutPanel1.Controls.Add(this.network1);
+            this.flowLayoutPanel1.Controls.Add(this.network2);
+            this.flowLayoutPanel1.Controls.Add(this.network3);
+            this.flowLayoutPanel1.Controls.Add(this.network4);
+            this.flowLayoutPanel1.Controls.Add(this.network5);
+            this.flowLayoutPanel1.Controls.Add(this.network6);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(301, 13);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(88, 115);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(88, 142);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
-            // checkBox1
+            // network1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(3, 3);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(55, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Viettel";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.network1.AutoSize = true;
+            this.network1.Checked = true;
+            this.network1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network1.Location = new System.Drawing.Point(3, 3);
+            this.network1.Name = "network1";
+            this.network1.Size = new System.Drawing.Size(55, 17);
+            this.network1.TabIndex = 0;
+            this.network1.Text = "Viettel";
+            this.network1.UseVisualStyleBackColor = true;
+            this.network1.CheckedChanged += new System.EventHandler(this.network1_CheckedChanged);
             // 
-            // checkBox2
+            // network2
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(3, 26);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(77, 17);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Vinaphone";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.network2.AutoSize = true;
+            this.network2.Checked = true;
+            this.network2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network2.Location = new System.Drawing.Point(3, 26);
+            this.network2.Name = "network2";
+            this.network2.Size = new System.Drawing.Size(77, 17);
+            this.network2.TabIndex = 1;
+            this.network2.Text = "Vinaphone";
+            this.network2.UseVisualStyleBackColor = true;
+            this.network2.CheckedChanged += new System.EventHandler(this.network2_CheckedChanged);
             // 
-            // checkBox3
+            // network3
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(3, 49);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(70, 17);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Mobifone";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.network3.AutoSize = true;
+            this.network3.Checked = true;
+            this.network3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network3.Location = new System.Drawing.Point(3, 49);
+            this.network3.Name = "network3";
+            this.network3.Size = new System.Drawing.Size(70, 17);
+            this.network3.TabIndex = 2;
+            this.network3.Text = "Mobifone";
+            this.network3.UseVisualStyleBackColor = true;
+            this.network3.CheckedChanged += new System.EventHandler(this.network3_CheckedChanged);
             // 
-            // checkBox4
+            // network4
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Checked = true;
-            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox4.Location = new System.Drawing.Point(3, 72);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(86, 17);
-            this.checkBox4.TabIndex = 3;
-            this.checkBox4.Text = "Vietnamobile";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            this.network4.AutoSize = true;
+            this.network4.Checked = true;
+            this.network4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network4.Location = new System.Drawing.Point(3, 72);
+            this.network4.Name = "network4";
+            this.network4.Size = new System.Drawing.Size(86, 17);
+            this.network4.TabIndex = 3;
+            this.network4.Text = "Vietnamobile";
+            this.network4.UseVisualStyleBackColor = true;
+            this.network4.CheckedChanged += new System.EventHandler(this.network4_CheckedChanged);
             // 
-            // checkBox5
+            // network5
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Checked = true;
-            this.checkBox5.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox5.Location = new System.Drawing.Point(3, 95);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(66, 17);
-            this.checkBox5.TabIndex = 4;
-            this.checkBox5.Text = "Itelecom";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            this.network5.AutoSize = true;
+            this.network5.Checked = true;
+            this.network5.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network5.Location = new System.Drawing.Point(3, 95);
+            this.network5.Name = "network5";
+            this.network5.Size = new System.Drawing.Size(66, 17);
+            this.network5.TabIndex = 4;
+            this.network5.Text = "Itelecom";
+            this.network5.UseVisualStyleBackColor = true;
+            this.network5.CheckedChanged += new System.EventHandler(this.network5_CheckedChanged);
             // 
-            // textBox4
+            // network6
             // 
-            this.textBox4.Location = new System.Drawing.Point(300, 134);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(90, 20);
-            this.textBox4.TabIndex = 9;
-            this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox4_KeyPress);
+            this.network6.AutoSize = true;
+            this.network6.Checked = true;
+            this.network6.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network6.Location = new System.Drawing.Point(3, 118);
+            this.network6.Name = "network6";
+            this.network6.Size = new System.Drawing.Size(72, 17);
+            this.network6.TabIndex = 5;
+            this.network6.Text = "Vodafone";
+            this.network6.UseVisualStyleBackColor = true;
+            this.network6.CheckedChanged += new System.EventHandler(this.network6_CheckedChanged);
             // 
-            // checkBox6
+            // checkBox
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(301, 164);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(97, 17);
-            this.checkBox6.TabIndex = 10;
-            this.checkBox6.Text = "Phone Number";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkBox.AutoSize = true;
+            this.checkBox.Location = new System.Drawing.Point(301, 164);
+            this.checkBox.Name = "checkBox";
+            this.checkBox.Size = new System.Drawing.Size(97, 17);
+            this.checkBox.TabIndex = 10;
+            this.checkBox.Text = "Phone Number";
+            this.toolTip1.SetToolTip(this.checkBox, "Check here to use custom number generator function, see detailed instructions on " +
+        "github");
+            this.checkBox.UseVisualStyleBackColor = true;
+            this.checkBox.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // timer2
             // 
@@ -310,8 +320,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(402, 193);
-            this.Controls.Add(this.checkBox6);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.checkBox);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.expand_button);
             this.Controls.Add(this.balance_label);
@@ -343,29 +352,30 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button generate_button;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button login_button;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label status_label;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label balance_label;
+        private System.Windows.Forms.Button login_button;
+        private System.Windows.Forms.Button generate_button;
         private System.Windows.Forms.Button expand_button;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Timer timer3;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label status_label;
+        private System.Windows.Forms.Label balance_label;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.CheckBox network1;
+        private System.Windows.Forms.CheckBox network2;
+        private System.Windows.Forms.CheckBox network3;
+        private System.Windows.Forms.CheckBox network4;
+        private System.Windows.Forms.CheckBox network5;
+        private System.Windows.Forms.CheckBox network6;
+        private System.Windows.Forms.CheckBox checkBox;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
