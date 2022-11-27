@@ -103,7 +103,7 @@ namespace VietnamOTP_Service
         string user_id = "";
         bool user_status = false;
         int user_balance = 0;
-        int lowest_price;
+        int lowest_price = 0;
 
         int session_timer = 0;
         int session_service = 0;
@@ -154,7 +154,6 @@ namespace VietnamOTP_Service
                             if (mode == true)
                             {
                                 request_ = request(link, mode);
-                                status_label.Text = exam_status + "Connecting...";
                             }
                         }
                         else
@@ -165,18 +164,18 @@ namespace VietnamOTP_Service
                             {
                                 user_id = "";
                                 user_status = false;
-                                status_label.Text = exam_status + "Your id cannot be authenticated";
+                                status_label.Text = exam_status + "Your ID cannot be authenticated";
                             }
                             else if (status_code == "-30")
                             {
                                 user_id = "";
                                 user_status = false;
-                                status_label.Text = exam_status + "Your id has been blocked";
+                                status_label.Text = exam_status + "Your ID has been blocked";
                             }
                             else if (status_code == "-4")
                             {
                                 checkBox.Checked = false;
-                                status_label.Text = exam_status + "This phone number is not available";
+                                status_label.Text = exam_status + "Phone number is not available";
                             }
                             else if (status_code == "-101")
                             {
@@ -195,7 +194,6 @@ namespace VietnamOTP_Service
                     if (mode == true)
                     {
                         request_ = request(link, mode);
-                        status_label.Text = exam_status + "Connecting...";
                     }
                 }
             }
@@ -208,14 +206,13 @@ namespace VietnamOTP_Service
             string request_ = "";
 
             // get balance
-
             if (user_id != "")
             {
                 request_ = request("https://api.viotp.com/users/balance?token=" + user_id, false);
                 if (request_ != "")
                 {
-                    Match match1 = Regex.Match(request_, "balance\":(.*)}}");
-                    user_balance = Convert.ToInt32(match1.Groups[1].Value);
+                    Match match = Regex.Match(request_, "balance\":(.*)}}");
+                    user_balance = Convert.ToInt32(match.Groups[1].Value);
 
                     balance_label.Text = String.Format("{0:n0}", user_balance) + " VND";
 
@@ -231,7 +228,6 @@ namespace VietnamOTP_Service
             }
 
             // get code
-
             if (session_id != "")
             {
                 request_ = request("https://api.viotp.com/session/getv2?token=" + user_id + "&requestId=" + session_id, false);
@@ -247,6 +243,7 @@ namespace VietnamOTP_Service
 
         private void ui_update()
         {
+            // check checkbox status
             check1 = check(network1);
             check2 = check(network2);
             check3 = check(network3);
@@ -255,7 +252,6 @@ namespace VietnamOTP_Service
             check6 = check(network6);
 
             // check account status
-
             if (user_status == true)
             {
                 generate_button.Enabled = true;
@@ -278,6 +274,7 @@ namespace VietnamOTP_Service
                 }
             }
 
+            // check session status
             if (session_id != "")
             {
                 string status_title = "";
@@ -287,7 +284,7 @@ namespace VietnamOTP_Service
                     textBox3.BackColor = Color.FromArgb(255, 192, 192);
                     textBox3.Text = session_code;
 
-                    Clipboard.SetText(session_code);
+                    Clipboard.SetText(textBox3.Text);
 
                     session_id = "";
 
@@ -343,7 +340,7 @@ namespace VietnamOTP_Service
 
             if (comboBox1.Items.Count == 0)
             {
-                string request_ = request("https://api.viotp.com/service/getv2?token=" + user_id + "&country=vn", true);
+                string request_ = request("https://api.viotp.com/service/getv2?token=" + user_id, true);
                 if (request_ != "")
                 {
                     request_ = Regex.Replace(request_, "{.*\\[", "").Replace("},{", "|").Replace("{", "").Replace("}]}", "");
@@ -352,7 +349,7 @@ namespace VietnamOTP_Service
                     {
                         "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba", "Uber", "Viber", "Paypal", "Zoho", "Lotteria", "Microsoft",
                         "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack", "Hao Hao", "VinID", "Gojek", "Grab", "Amazon", "Instagram",
-                        "WhatsApp", "Twitter", "Apple ID"
+                        "WhatsApp", "Twitter", "Apple ID", "Ebay", "Tinder", "Wechat", "WhatsApp"
                     };
 
                     foreach (string service_info in service_list_raw)
@@ -361,16 +358,21 @@ namespace VietnamOTP_Service
                         {
                             service_list.Add(service_info);
 
+                            // get service info
                             Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
                             string service_name = match1.Groups[1].Value;
                             Match match2 = Regex.Match(service_info, "price\":(.*)");
                             string service_price = match2.Groups[1].Value;
 
+                            // get lowest price
                             int price = Convert.ToInt32(service_price);
                             if (lowest_price == 0) lowest_price = price;
                             else if (price < lowest_price) lowest_price = price;
-                            
-                            if (service_price.Count() <= 3) service_price = "   " + String.Format("{0:n0}", price);
+
+                            // format price
+                            service_price = String.Format("{0:n0}", price);
+                            if (service_price.Count() <= 3) service_price = "   " + service_price;
+
                             comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
                         }
                     }
@@ -380,9 +382,13 @@ namespace VietnamOTP_Service
                         {
                             service_list.Add(service_info);
 
-                            string service_name = "------          Other Service          ------";
-                            Match match2 = Regex.Match(service_info, "price\":(.*)");
-                            string service_price = String.Format("{0:n0}", Convert.ToInt32(match2.Groups[1].Value));
+                            // get service info
+                            string service_name = "------         Other Service         ------";
+                            Match match = Regex.Match(service_info, "price\":(.*)");
+                            string service_price = match.Groups[1].Value;
+
+                            // format price
+                            service_price = String.Format("{0:n0}", Convert.ToInt32(service_price));
                             if (service_price.Count() <= 3) service_price = "   " + service_price;
 
                             comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
@@ -393,11 +399,10 @@ namespace VietnamOTP_Service
                     {
                         comboBox1.SelectedIndex = session_service;
                     }
-
-                    status_label.Text = exam_status + "Welcome to VietnamOTP";
-                    File.WriteAllText(uuid_path, user_id);
                 }
             }
+            status_label.Text = exam_status + "Welcome to VietnamOTP";
+            File.WriteAllText(uuid_path, user_id);
         }
 
         private void generate()
@@ -413,8 +418,8 @@ namespace VietnamOTP_Service
             else session_country = "ro";
 
             string service_info = service_list[session_service].ToString();
-            Match match0 = Regex.Match(service_info, "id\":(.*),\"name");
-            string service_id = match0.Groups[1].Value;
+            Match match = Regex.Match(service_info, "id\":(.*),\"name");
+            string service_id = match.Groups[1].Value;
 
             string request_ = "https://api.viotp.com/request/getv2?token=" + user_id + "&serviceId=" + service_id;
 
@@ -424,7 +429,14 @@ namespace VietnamOTP_Service
             }
             else
             {
-                request_ = request(request_ + "&network=" + session_network + "&country=" + session_country, true);
+                if (session_country == "vn")
+                {
+                    request_ = request(request_ + "&network=" + session_network + "&country=" + session_country, true);
+                }
+                else
+                {
+                    request_ = request(request_ + "&country=" + session_country, true);
+                }
             }
 
             main_update();
@@ -436,13 +448,18 @@ namespace VietnamOTP_Service
                 Match match2 = Regex.Match(request_, "request_id\":(.*),\"balance");
                 session_id = match2.Groups[1].Value;
 
-                Clipboard.SetText(session_number);
-
                 session_number = "0" + String.Format("{0:####-###-###}", Convert.ToInt32(session_number));
-
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
                 textBox2.Text = session_number;
+
+                Clipboard.SetText(textBox2.Text);
                 color_network(session_number);
+            }
+            else
+            {
+                textBox2.BackColor = textBox3.BackColor = SystemColors.Window;
+                textBox2.Text = "Number";
+                textBox3.Text = "OTP Code";
             }
         }
 
