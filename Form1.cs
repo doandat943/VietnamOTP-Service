@@ -27,7 +27,7 @@ namespace VietnamOTP_Service
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Thread updater = new Thread(update_1);
+            Thread updater = new Thread(main_update);
             updater.SetApartmentState(ApartmentState.STA);
             updater.IsBackground = true;
             updater.Start();
@@ -35,17 +35,18 @@ namespace VietnamOTP_Service
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            Thread updater = new Thread(update_2);
+            Thread updater = new Thread(ui_update);
             updater.SetApartmentState(ApartmentState.STA);
             updater.IsBackground = true;
             updater.Start();
         }
+
         private void timer3_Tick(object sender, EventArgs e)
         {
-            Thread updater = new Thread(update_3);
-            updater.SetApartmentState(ApartmentState.STA);
-            updater.IsBackground = true;
-            updater.Start();
+            if (session_id != "")
+            {
+                session_timer++;
+            }
         }
 
         private void login_button_Click(object sender, EventArgs e)
@@ -64,25 +65,74 @@ namespace VietnamOTP_Service
             updater.Start();
         }
 
+        private void expand_button_Click(object sender, EventArgs e)
+        {
+            if (this.Size == new Size(316, 232))
+            {
+                expand_button.Text = "<";
+                this.Size = new Size(418, 232);
+            }
+            else
+            {
+                expand_button.Text = ">";
+                this.Size = new Size(316, 232);
+            }
+        }
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBox2.Text);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBox3.Text);
+        }
+
         WebClient client = new WebClient();
         ArrayList service_list = new ArrayList();
 
-        string exam_status = "Status:  ";
-        string uuid_path = Path.GetTempPath() + "token.otp";
+        static string exam_status = "Status:  ";
+        static string uuid_path = Path.GetTempPath() + "token.otp";
 
         string user_id = "";
         bool user_status = false;
         int user_balance = 0;
+        int lowest_price;
 
+        int session_timer = 0;
         int session_service = 0;
         string session_id = "";
         string session_number = "";
-        string session_status = "0";
+        string session_country = "";
+        string session_network = "";
+        string session_status = "";
         string session_code = "";
 
-        int timer = 0;
         int dot_counter = 0;
         string dot = "";
+
+        private void new_session()
+        {
+            session_timer = 0;
+            session_service = 0;
+            session_id = "";
+            session_number = "";
+            session_country = "";
+            session_network = "";
+            session_status = "";
+            session_code = "";
+
+            dot_counter = 0;
+            dot = "";
+
+            network1.ForeColor = network2.ForeColor = network3.ForeColor = network4.ForeColor = network5.ForeColor = network6.ForeColor = SystemColors.ControlText;
+        }
 
         private string request(string link, bool mode)
         {
@@ -153,7 +203,7 @@ namespace VietnamOTP_Service
             return request_;
         }
 
-        private void update_1()
+        private void main_update()
         {
             string request_ = "";
 
@@ -165,20 +215,17 @@ namespace VietnamOTP_Service
                 if (request_ != "")
                 {
                     Match match1 = Regex.Match(request_, "balance\":(.*)}}");
-                    string balance = match1.Groups[1].Value;
+                    user_balance = Convert.ToInt32(match1.Groups[1].Value);
 
-                    if (Int32.TryParse(balance, out user_balance))
+                    balance_label.Text = String.Format("{0:n0}", user_balance) + " VND";
+
+                    if (user_balance >= lowest_price)
                     {
-                        balance_label.Text = String.Format("{0:n0}", Convert.ToInt64(user_balance)) + " VND";
-
-                        if (user_balance >= 1000)
-                        {
-                            user_status = true;
-                        }
-                        else if (user_balance < 1000)
-                        {
-                            user_status = false;
-                        }
+                        user_status = true;
+                    }
+                    else
+                    {
+                        user_status = false;
                     }
                 }
             }
@@ -195,79 +242,18 @@ namespace VietnamOTP_Service
                     Match match2 = Regex.Match(request_, "Code\":\"(.*)\",\"PhoneOriginal");
                     session_code = match2.Groups[1].Value;
                 }
-                else
-                {
-                    session_status = "";
-                    session_code = "";
-                }
             }
         }
 
-        private void update_2()
+        private void ui_update()
         {
-            // check otp code coming
+            check1 = check(network1);
+            check2 = check(network2);
+            check3 = check(network3);
+            check4 = check(network4);
+            check5 = check(network5);
+            check6 = check(network6);
 
-            if (session_id != "")
-            {
-                string status_title = "";
-
-                if (session_status == "1")
-                {
-                    textBox3.BackColor = Color.FromArgb(255, 192, 192);
-                    textBox3.Text = session_code;
-
-                    Clipboard.SetText(session_code);
-
-                    new_session();
-
-                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Windows Print complete.wav");
-                    player.Play();
-                    status_title = "Success";
-                }
-                else if (session_status == "2")
-                {
-                    textBox2.BackColor = SystemColors.Window;
-                    textBox2.Text = "Number";
-
-                    new_session();
-
-                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Speech On.wav");
-                    player.Play();
-                    status_title = "Expired";
-                }
-                else
-                {
-                    timer++;
-
-                    if (session_status == "0")
-                    {
-                        status_title = "Waiting ";
-                    }
-                    else
-                    {
-                        status_title = "Connecting ";
-                    }
-
-                    if (dot_counter++ < 3)
-                    {
-                        dot += ".";
-                    }
-                    else
-                    {
-                        dot = "";
-                        dot_counter = 0;
-                    }
-                    status_title += dot;
-                }
-
-                TimeSpan time = TimeSpan.FromSeconds(timer);
-
-                status_label.Text = exam_status + time.ToString() + "  |  ID" + (session_service + 1).ToString("00") + "  |  " + status_title;
-            }
-        }
-
-        private void update_3()
-        {
             // check account status
 
             if (user_status == true)
@@ -291,24 +277,69 @@ namespace VietnamOTP_Service
                     login_button.Enabled = false;
                 }
             }
-        }
 
-        private void new_session()
-        {
-            session_id = "";
-            session_number = "";
-            session_status = "0";
-            session_code = "";
+            if (session_id != "")
+            {
+                string status_title = "";
 
-            dot_counter = 0;
-            dot = "";
+                if (session_status == "1")
+                {
+                    textBox3.BackColor = Color.FromArgb(255, 192, 192);
+                    textBox3.Text = session_code;
+
+                    Clipboard.SetText(session_code);
+
+                    session_id = "";
+
+                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Windows Print complete.wav");
+                    player.Play();
+                    status_title = "Success";
+                }
+                else if (session_status == "2")
+                {
+                    textBox2.BackColor = SystemColors.Window;
+                    textBox2.Text = "Number";
+
+                    session_id = "";
+
+                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\Windows\Media\Speech On.wav");
+                    player.Play();
+                    status_title = "Expired";
+                }
+                else
+                {
+                    if (session_status == "0")
+                    {
+                        status_title = "Waiting ";
+                    }
+                    else
+                    {
+                        status_title = "Connecting ";
+                    }
+
+                    if (dot_counter++ < 3)
+                    {
+                        dot += ".";
+                    }
+                    else
+                    {
+                        dot = "";
+                        dot_counter = 0;
+                    }
+                    status_title += dot;
+                }
+
+                TimeSpan time = TimeSpan.FromSeconds(session_timer);
+
+                status_label.Text = exam_status + time.ToString() + "  |  ID" + (session_service + 1).ToString("00") + "  |  " + status_title;
+            }
         }
 
         private void login()
         {
             user_id = textBox1.Text;
 
-            update_1();
+            main_update();
 
             if (comboBox1.Items.Count == 0)
             {
@@ -319,13 +350,9 @@ namespace VietnamOTP_Service
                     string[] service_list_raw = request_.Split('|');
                     string[] a =
                     {
-                        "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba", "Uber", "Viber", "Paypal", "Zoho", "Lotteria", "Microsoft", 
+                        "ShopeePay", "ShopeeFood", "Lazada", "Tiki", "Fahasa", "Toss", "Alibaba", "Uber", "Viber", "Paypal", "Zoho", "Lotteria", "Microsoft",
                         "Telegram", "Tiktok", "Discord", "Gmail", "Facebook", "Zalopay", "ShopBack", "Hao Hao", "VinID", "Gojek", "Grab", "Amazon", "Instagram",
                         "WhatsApp", "Twitter", "Apple ID"
-                    };
-                    string[] b =
-                    {
-                        "OTHER"
                     };
 
                     foreach (string service_info in service_list_raw)
@@ -337,26 +364,25 @@ namespace VietnamOTP_Service
                             Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
                             string service_name = match1.Groups[1].Value;
                             Match match2 = Regex.Match(service_info, "price\":(.*)");
-                            string service_price = String.Format("{0:n0}", Convert.ToDecimal(match2.Groups[1].Value));
-                            if (service_price.Count() <= 3) service_price = "   " + service_price;
+                            string service_price = match2.Groups[1].Value;
 
+                            int price = Convert.ToInt32(service_price);
+                            if (lowest_price == 0) lowest_price = price;
+                            else if (price < lowest_price) lowest_price = price;
+                            
+                            if (service_price.Count() <= 3) service_price = "   " + String.Format("{0:n0}", price);
                             comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
                         }
                     }
                     foreach (string service_info in service_list_raw)
                     {
-                        if (b.Any(service_info.Contains))
+                        if (service_info.Contains("OTHER"))
                         {
                             service_list.Add(service_info);
 
-                            Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
-                            string service_name = match1.Groups[1].Value;
-                            if (service_name.Contains("OTHER"))
-                            {
-                                service_name = "------          Other Service          ------";
-                            }
+                            string service_name = "------          Other Service          ------";
                             Match match2 = Regex.Match(service_info, "price\":(.*)");
-                            string service_price = String.Format("{0:n0}", Convert.ToDecimal(match2.Groups[1].Value));
+                            string service_price = String.Format("{0:n0}", Convert.ToInt32(match2.Groups[1].Value));
                             if (service_price.Count() <= 3) service_price = "   " + service_price;
 
                             comboBox1.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
@@ -376,11 +402,16 @@ namespace VietnamOTP_Service
 
         private void generate()
         {
-            timer = -1;
+            // start new
+
+            new_session();
 
             // get selected service
 
             session_service = comboBox1.SelectedIndex;
+            if (check6 == false) session_country = "vn";
+            else session_country = "ro";
+
             string service_info = service_list[session_service].ToString();
             Match match0 = Regex.Match(service_info, "id\":(.*),\"name");
             string service_id = match0.Groups[1].Value;
@@ -393,10 +424,10 @@ namespace VietnamOTP_Service
             }
             else
             {
-                request_ = request(request_ + "&network=" + network, true);
+                request_ = request(request_ + "&network=" + session_network + "&country=" + session_country, true);
             }
 
-            update_1();
+            main_update();
 
             if (request_ != "")
             {
@@ -407,96 +438,88 @@ namespace VietnamOTP_Service
 
                 Clipboard.SetText(session_number);
 
-                session_number = "0" + String.Format("{0:####-###-###}", Convert.ToInt64(session_number));
+                session_number = "0" + String.Format("{0:####-###-###}", Convert.ToInt32(session_number));
 
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
                 textBox2.Text = session_number;
-
-                textBox3.BackColor = SystemColors.Window;
-                textBox3.Text = "OTP Code";
-            }
-            else
-            {
-                new_session();
+                color_network(session_number);
             }
         }
 
-        private void expand_button_Click(object sender, EventArgs e)
+        private void color_network(string number)
         {
-            if (this.Size == new Size(316, 232))
+            if (session_country == "vn")
             {
-                expand_button.Text = "<";
-                this.Size = new Size(418, 232);
+                string prefix = number.Substring(0, 3);
+
+                if (network1_prefix.Any(prefix.Contains)) network1.ForeColor = Color.FromArgb(236, 38, 43);
+                if (network2_prefix.Any(prefix.Contains)) network2.ForeColor = Color.FromArgb(236, 38, 43);
+                if (network3_prefix.Any(prefix.Contains)) network3.ForeColor = Color.FromArgb(236, 38, 43);
+                if (network4_prefix.Any(prefix.Contains)) network4.ForeColor = Color.FromArgb(236, 38, 43);
+                if (network5_prefix.Any(prefix.Contains)) network5.ForeColor = Color.FromArgb(236, 38, 43);
             }
-            else
-            {
-                expand_button.Text = ">";
-                this.Size = new Size(316, 232);
-            }
+            else network6.ForeColor = Color.FromArgb(236, 38, 43);
         }
 
-        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        string[] network1_prefix = { "096", "097", "098", "086", "032", "033", "034", "035", "036", "037", "038", "039" };
+        string[] network2_prefix = { "088", "091", "094", "081", "082", "083", "084", "085" };
+        string[] network3_prefix = { "090", "093", "089", "070", "079", "078", "077", "076" };
+        string[] network4_prefix = { "052", "056", "058", "092" };
+        string[] network5_prefix = { "087" };
+
+        bool check1;
+        bool check2;
+        bool check3;
+        bool check4;
+        bool check5;
+        bool check6;
+
+        private bool check(CheckBox checkBox)
         {
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+            bool b;
+            if (checkBox.CheckState == CheckState.Checked) b = true;
+            else b = false;
+            return b;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private bool checkBoxVN(CheckBox checkBox, bool b)
         {
-            Clipboard.SetText(textBox2.Text);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(textBox3.Text);
-        }
-
-        string network = "";
-
-        int check1 = 0;
-        int check2 = 0;
-        int check3 = 0;
-        int check4 = 0;
-        int check5 = 0;
-        int check6 = 0;
-
-        private int checkBoxMOD(CheckBox a, int b)
-        {
-            if (a.CheckState == CheckState.Unchecked && b == 0)
+            if (checkBox.CheckState == CheckState.Unchecked)
             {
-                b = 1;
-                a.CheckState = CheckState.Indeterminate;
-            }
-            else if (a.CheckState == CheckState.Unchecked && b == 1)
-            {
-                b = 0;
-                a.CheckState = CheckState.Checked;
+                if (b == true)
+                {
+                    b = false;
+                    checkBox.CheckState = CheckState.Indeterminate;
+                }
+                else
+                {
+                    b = true;
+                    checkBox.CheckState = CheckState.Checked;
+                    if (network6.Checked) network6.CheckState = CheckState.Indeterminate;
+                }
             }
 
-            network = "";
+            session_network = "";
 
             if (network1.CheckState == CheckState.Checked)
             {
-                network += "VIETTEL|";
+                session_network += "VIETTEL|";
             }
-            else if (network2.CheckState == CheckState.Checked)
+            if (network2.CheckState == CheckState.Checked)
             {
-                network += "VINAPHONE|";
+                session_network += "VINAPHONE|";
             }
-            else if (network3.CheckState == CheckState.Checked)
+            if (network3.CheckState == CheckState.Checked)
             {
-                network += "MOBIFONE|";
+                session_network += "MOBIFONE|";
             }
-            else if (network4.CheckState == CheckState.Checked)
+            if (network4.CheckState == CheckState.Checked)
             {
-                network += "VIETNAMOBILE|";
+                session_network += "VIETNAMOBILE|";
             }
-            else if (network5.CheckState == CheckState.Checked)
+            if (network5.CheckState == CheckState.Checked)
             {
-                network += "ITELECOM|";
-            }
-            else if (network6.CheckState == CheckState.Checked)
-            {
-                network += "VODAFONE|";
+                session_network += "ITELECOM|";
             }
             return b;
         }
@@ -509,7 +532,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check1 = checkBoxMOD(network1, check1);
+                check1 = checkBoxVN(network1, check1);
             }
         }
 
@@ -521,7 +544,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check2 = checkBoxMOD(network2, check2);
+                check2 = checkBoxVN(network2, check2);
             }
         }
 
@@ -533,7 +556,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check3 = checkBoxMOD(network3, check3);
+                check3 = checkBoxVN(network3, check3);
             }
         }
 
@@ -545,7 +568,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check4 = checkBoxMOD(network4, check4);
+                check4 = checkBoxVN(network4, check4);
             }
         }
 
@@ -557,19 +580,23 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check5 = checkBoxMOD(network5, check5);
+                check5 = checkBoxVN(network5, check5);
             }
         }
 
         private void network6_CheckedChanged(object sender, EventArgs e)
         {
-            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate)
+            if (network6.CheckState == CheckState.Unchecked && check6 == true)
             {
-                network6.Checked = true;
+                check6 = false;
+                network6.CheckState = CheckState.Indeterminate;
+                network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Checked;
             }
-            else
+            else if (network6.CheckState == CheckState.Unchecked && check6 == false)
             {
-                check6 = checkBoxMOD(network6, check6);
+                check6 = true;
+                network6.CheckState = CheckState.Checked;
+                network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Indeterminate;
             }
         }
 

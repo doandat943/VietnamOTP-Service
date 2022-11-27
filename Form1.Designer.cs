@@ -209,7 +209,7 @@
             this.flowLayoutPanel1.Controls.Add(this.network6);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(301, 13);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(88, 142);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(88, 140);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // network1
@@ -222,6 +222,7 @@
             this.network1.Size = new System.Drawing.Size(55, 17);
             this.network1.TabIndex = 0;
             this.network1.Text = "Viettel";
+            this.toolTip1.SetToolTip(this.network1, "Vietnam");
             this.network1.UseVisualStyleBackColor = true;
             this.network1.CheckedChanged += new System.EventHandler(this.network1_CheckedChanged);
             // 
@@ -235,6 +236,7 @@
             this.network2.Size = new System.Drawing.Size(77, 17);
             this.network2.TabIndex = 1;
             this.network2.Text = "Vinaphone";
+            this.toolTip1.SetToolTip(this.network2, "Vietnam");
             this.network2.UseVisualStyleBackColor = true;
             this.network2.CheckedChanged += new System.EventHandler(this.network2_CheckedChanged);
             // 
@@ -248,6 +250,7 @@
             this.network3.Size = new System.Drawing.Size(70, 17);
             this.network3.TabIndex = 2;
             this.network3.Text = "Mobifone";
+            this.toolTip1.SetToolTip(this.network3, "Vietnam");
             this.network3.UseVisualStyleBackColor = true;
             this.network3.CheckedChanged += new System.EventHandler(this.network3_CheckedChanged);
             // 
@@ -261,6 +264,7 @@
             this.network4.Size = new System.Drawing.Size(86, 17);
             this.network4.TabIndex = 3;
             this.network4.Text = "Vietnamobile";
+            this.toolTip1.SetToolTip(this.network4, "Vietnam");
             this.network4.UseVisualStyleBackColor = true;
             this.network4.CheckedChanged += new System.EventHandler(this.network4_CheckedChanged);
             // 
@@ -274,6 +278,7 @@
             this.network5.Size = new System.Drawing.Size(66, 17);
             this.network5.TabIndex = 4;
             this.network5.Text = "Itelecom";
+            this.toolTip1.SetToolTip(this.network5, "Vietnam");
             this.network5.UseVisualStyleBackColor = true;
             this.network5.CheckedChanged += new System.EventHandler(this.network5_CheckedChanged);
             // 
@@ -281,19 +286,20 @@
             // 
             this.network6.AutoSize = true;
             this.network6.Checked = true;
-            this.network6.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.network6.CheckState = System.Windows.Forms.CheckState.Indeterminate;
             this.network6.Location = new System.Drawing.Point(3, 118);
             this.network6.Name = "network6";
             this.network6.Size = new System.Drawing.Size(72, 17);
             this.network6.TabIndex = 5;
             this.network6.Text = "Vodafone";
+            this.toolTip1.SetToolTip(this.network6, "Romania");
             this.network6.UseVisualStyleBackColor = true;
             this.network6.CheckedChanged += new System.EventHandler(this.network6_CheckedChanged);
             // 
             // checkBox
             // 
             this.checkBox.AutoSize = true;
-            this.checkBox.Location = new System.Drawing.Point(301, 164);
+            this.checkBox.Location = new System.Drawing.Point(301, 163);
             this.checkBox.Name = "checkBox";
             this.checkBox.Size = new System.Drawing.Size(97, 17);
             this.checkBox.TabIndex = 10;
@@ -306,13 +312,13 @@
             // timer2
             // 
             this.timer2.Enabled = true;
-            this.timer2.Interval = 1000;
+            this.timer2.Interval = 200;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // timer3
             // 
             this.timer3.Enabled = true;
-            this.timer3.Interval = 500;
+            this.timer3.Interval = 1000;
             this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
             // 
             // Form1
