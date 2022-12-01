@@ -248,7 +248,7 @@ namespace VietnamOTP_Service
 
                 Clipboard.SetText(session_number);
                 color_network(session_number);
-                
+
                 textBox2.BackColor = Color.FromArgb(255, 224, 192);
                 textBox2.Text = "0" + String.Format("{0:####-###-###}", Convert.ToInt32(session_number));
             }
@@ -295,12 +295,12 @@ namespace VietnamOTP_Service
         private void ui_update()
         {
             // check checkbox status
-            check1 = check(network1);
-            check2 = check(network2);
-            check3 = check(network3);
-            check4 = check(network4);
-            check5 = check(network5);
-            check6 = check(network6);
+            check1 = check_state(network1);
+            check2 = check_state(network2);
+            check3 = check_state(network3);
+            check4 = check_state(network4);
+            check5 = check_state(network5);
+            check6 = check_state(network6);
 
             // check account status
             if (user_id != "")
@@ -488,7 +488,7 @@ namespace VietnamOTP_Service
         bool check5;
         bool check6;
 
-        private bool check(CheckBox checkBox)
+        private bool check_state(CheckBox checkBox)
         {
             bool b;
             if (checkBox.CheckState == CheckState.Checked) b = true;
@@ -509,7 +509,11 @@ namespace VietnamOTP_Service
                 {
                     b = true;
                     checkBox.CheckState = CheckState.Checked;
-                    if (network6.Checked) network6.CheckState = CheckState.Indeterminate;
+                    if (network6.Checked)
+                    {
+                        network6.CheckState = CheckState.Indeterminate;
+                        comboBox2.Visible = false;
+                    }
                 }
             }
 
@@ -600,19 +604,22 @@ namespace VietnamOTP_Service
 
         private void network6_CheckedChanged(object sender, EventArgs e)
         {
-            if (network6.CheckState == CheckState.Unchecked && check6 == true)
+            if (network6.CheckState == CheckState.Unchecked)
             {
-                check6 = false;
-                comboBox2.Visible = false;
-                network6.CheckState = CheckState.Indeterminate;
-                network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Checked;
-            }
-            else if (network6.CheckState == CheckState.Unchecked && check6 == false)
-            {
-                check6 = true;
-                comboBox2.Visible = true;
-                network6.CheckState = CheckState.Checked;
-                network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Indeterminate;
+                if (check6 == false)
+                {
+                    check6 = true;
+                    comboBox2.Visible = true;
+                    network6.CheckState = CheckState.Checked;
+                    network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Indeterminate;
+                }
+                else
+                {
+                    check6 = false;
+                    comboBox2.Visible = false;
+                    network6.CheckState = CheckState.Indeterminate;
+                    network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Checked;
+                }
             }
         }
 
@@ -620,10 +627,12 @@ namespace VietnamOTP_Service
         {
             if (checkBox.Checked == true)
             {
+                if (textBox2.Text == "Number") textBox2.Text = "";
                 textBox2.Enabled = true;
             }
             else
             {
+                if (session_id == "") textBox2.Text = "Number";
                 textBox2.Enabled = false;
             }
         }
