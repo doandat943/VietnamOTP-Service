@@ -184,7 +184,7 @@ namespace VietnamOTP_Service
 
         private void generate()
         {
-            // start new
+            // start new session
 
             session_timer = 0;
             session_service = 0;
@@ -218,6 +218,8 @@ namespace VietnamOTP_Service
             Match match = Regex.Match(service_info, "id\":(.*),\"name");
             string service_id = match.Groups[1].Value;
 
+            // request number
+
             string request_ = "https://api.viotp.com/request/getv2?token=" + user_id + "&serviceId=" + service_id;
             if (checkBox.Checked == true)
             {
@@ -234,6 +236,8 @@ namespace VietnamOTP_Service
                     request_ = request(request_ + "&country=" + session_country, true);
                 }
             }
+
+            // get balance and number
 
             main_update();
 
@@ -303,7 +307,7 @@ namespace VietnamOTP_Service
             check6 = check_state(network6);
 
             // check account status
-            if (user_id != "")
+            if (user_balance != 0)
             {
                 if (user_balance >= lowest_price)
                 {
@@ -388,13 +392,16 @@ namespace VietnamOTP_Service
 
             main_update();
 
-            if (comboBox1.Items.Count == 0)
+            if (user_id != "")
             {
-                get_service(comboBox1, vn_service_list, "vn");
-                get_service(comboBox2, ro_service_list, "ro");
+                if (comboBox1.Items.Count == 0)
+                {
+                    get_service(comboBox1, vn_service_list, "vn");
+                    get_service(comboBox2, ro_service_list, "ro");
+                }
+                status_label.Text = exam_status + "Welcome to VietnamOTP";
+                File.WriteAllText(uuid_path, user_id);
             }
-            status_label.Text = exam_status + "Welcome to VietnamOTP";
-            File.WriteAllText(uuid_path, user_id);
         }
 
         private void get_service(ComboBox comboBox, ArrayList service_list, string country)
@@ -414,8 +421,6 @@ namespace VietnamOTP_Service
                 {
                     if (a.Any(service_info.Contains))
                     {
-                        service_list.Add(service_info);
-
                         // get service info
                         Match match1 = Regex.Match(service_info, "name\":\"(.*)\",\"price");
                         string service_name = match1.Groups[1].Value;
@@ -431,6 +436,8 @@ namespace VietnamOTP_Service
                         service_price = String.Format("{0:n0}", price);
                         if (service_price.Count() <= 3) service_price = "   " + service_price;
 
+                        // add service to list
+                        service_list.Add(service_info);
                         comboBox.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
                     }
                 }
@@ -438,8 +445,6 @@ namespace VietnamOTP_Service
                 {
                     if (service_info.Contains("OTHER"))
                     {
-                        service_list.Add(service_info);
-
                         // get service info
                         string service_name = "------         Other Service         ------";
                         Match match = Regex.Match(service_info, "price\":(.*)");
@@ -449,6 +454,8 @@ namespace VietnamOTP_Service
                         service_price = String.Format("{0:n0}", Convert.ToInt32(service_price));
                         if (service_price.Count() <= 3) service_price = "   " + service_price;
 
+                        // add service to list
+                        service_list.Add(service_info);
                         comboBox.Items.Add("ID" + service_list.Count.ToString("00") + ":    " + service_price + " VND  |  " + service_name);
                     }
                 }
@@ -475,9 +482,9 @@ namespace VietnamOTP_Service
             else network6.ForeColor = Color.FromArgb(236, 38, 43);
         }
 
-        string[] network1_prefix = { "096", "097", "098", "086", "032", "033", "034", "035", "036", "037", "038", "039" };
-        string[] network2_prefix = { "088", "091", "094", "081", "082", "083", "084", "085" };
-        string[] network3_prefix = { "090", "093", "089", "070", "079", "078", "077", "076" };
+        string[] network1_prefix = { "032", "033", "034", "035", "036", "037", "038", "039", "086", "096", "097", "098" };
+        string[] network2_prefix = { "081", "082", "083", "084", "085", "088", "091", "094" };
+        string[] network3_prefix = { "070", "076", "077", "078", "079", "089", "090", "093" };
         string[] network4_prefix = { "052", "056", "058", "092" };
         string[] network5_prefix = { "087" };
 
@@ -496,7 +503,7 @@ namespace VietnamOTP_Service
             return b;
         }
 
-        private bool checkBoxVN(CheckBox checkBox, bool b)
+        private bool CheckBoxMOD(CheckBox checkBox, bool b)
         {
             if (checkBox.CheckState == CheckState.Unchecked)
             {
@@ -550,7 +557,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check1 = checkBoxVN(network1, check1);
+                check1 = CheckBoxMOD(network1, check1);
             }
         }
 
@@ -562,7 +569,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check2 = checkBoxVN(network2, check2);
+                check2 = CheckBoxMOD(network2, check2);
             }
         }
 
@@ -574,7 +581,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check3 = checkBoxVN(network3, check3);
+                check3 = CheckBoxMOD(network3, check3);
             }
         }
 
@@ -586,7 +593,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check4 = checkBoxVN(network4, check4);
+                check4 = CheckBoxMOD(network4, check4);
             }
         }
 
@@ -598,7 +605,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                check5 = checkBoxVN(network5, check5);
+                check5 = CheckBoxMOD(network5, check5);
             }
         }
 
