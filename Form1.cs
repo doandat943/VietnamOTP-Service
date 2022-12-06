@@ -307,7 +307,7 @@ namespace VietnamOTP_Service
             check6 = check_state(network6);
 
             // check account status
-            if (user_balance != 0)
+            if (user_id != "")
             {
                 if (user_balance >= lowest_price)
                 {

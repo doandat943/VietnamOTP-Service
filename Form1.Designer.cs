@@ -89,7 +89,7 @@
             this.label2.Size = new System.Drawing.Size(60, 18);
             this.label2.TabIndex = 0;
             this.label2.Text = "Balance";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label1
             // 
@@ -383,6 +383,7 @@
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Timer timer3;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label status_label;
         private System.Windows.Forms.Label balance_label;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
@@ -394,7 +395,6 @@
         private System.Windows.Forms.CheckBox network6;
         private System.Windows.Forms.CheckBox checkBox;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.ComboBox comboBox2;
     }
 }
 
