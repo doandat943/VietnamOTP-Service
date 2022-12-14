@@ -118,21 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>16, 18</value>
+    <value>16, 12</value>
   </metadata>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>277, 18</value>
+    <value>277, 12</value>
   </metadata>
   <metadata name="timer2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>103, 18</value>
+    <value>103, 12</value>
   </metadata>
   <metadata name="timer3.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>190, 18</value>
+    <value>190, 12</value>
+  </metadata>
+  <metadata name="ElipseControl.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>366, 12</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>56</value>
+    <value>47</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ControlPanel.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFOSURBVChTDcrXdtIAAIDhvK5C9gSqr6RWZkIIIawOvfb0
+        VAqlachgFEqHHs8v3/UnpF8+kHwtEZ+XWX6XWNQV7hoqs5bObdvgpmPxy3UQ8m8fSc9LJHWRuCGzbCos
+        Whrzjs7MNbn1bG66p7iul8gbZbKmxKqt8NhReXB17j2DuW8x6zn8DioI22aJdUukaEtkrsLK03js6jz4
+        JveBxbzvcBdWEfbtMruOyMaTKboqma+x6hkkfZM4tFkOKiyiU3x2RfaexM5X2PQ0ikAnO6V0YJFEDvGw
+        ynJUQ3jpijz7MvtAYdfX2IQGxcAkH9qkI4dkXCWenCG8BRIvfZljqHKIdJ6GBtuRxXpsk08rpBc1Vpen
+        +CeUeBsovEYqx5HOYWzyNLHYTh3WlxXyqxrZ9SeEf5HM36HK+1jjdWJwnFocLmz2VxV211U2P84ofn7m
+        PzZNNsacnrRWAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAAAAAAAEAIACUPAAAZgAAAICAAAABACAAKAgBAPo8AABAQAAAAQAgAChCAAAiRQEAMDAAAAEA
@@ -2058,4 +2073,10 @@
         AAA=
 </value>
   </data>
+  <metadata name="DragControl1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>481, 12</value>
+  </metadata>
+  <metadata name="DragControl2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>597, 12</value>
+  </metadata>
 </root>

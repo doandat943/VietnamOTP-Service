@@ -17,12 +17,11 @@ namespace VietnamOTP_Service
             Control.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
 
-            this.Size = new Size(316, 232);
+            this.Size = new Size(this.Size.Width - 100, this.Size.Height);
+            Close_Button.Location = new Point(Close_Button.Location.X - 100, Close_Button.Location.Y);
+            Minimize_Button.Location = new Point(Minimize_Button.Location.X - 100, Close_Button.Location.Y);
 
-            if (File.Exists(uuid_path))
-            {
-                textBox1.Text = File.ReadAllText(uuid_path);
-            }
+            if (File.Exists(uuid_path)) textBox1.Text = File.ReadAllText(uuid_path);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -43,10 +42,7 @@ namespace VietnamOTP_Service
 
         private void timer3_Tick(object sender, EventArgs e)
         {
-            if (session_id != "")
-            {
-                session_timer++;
-            }
+            if (session_id != "") session_timer++;
         }
 
         private void login_button_Click(object sender, EventArgs e)
@@ -65,17 +61,31 @@ namespace VietnamOTP_Service
             updater.Start();
         }
 
+        private void Close_Button_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void Minimize_Button_Click(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+
         private void expand_button_Click(object sender, EventArgs e)
         {
-            if (this.Size == new Size(316, 232))
+            if (this.Size != new Size(402, 222))
             {
                 expand_button.Text = "<";
-                this.Size = new Size(418, 232);
+                this.Size = new Size(this.Size.Width + 100, this.Size.Height);
+                Close_Button.Location = new Point(Close_Button.Location.X + 100, Close_Button.Location.Y);
+                Minimize_Button.Location = new Point(Minimize_Button.Location.X + 100, Close_Button.Location.Y);
             }
             else
             {
                 expand_button.Text = ">";
-                this.Size = new Size(316, 232);
+                this.Size = new Size(this.Size.Width - 100, this.Size.Height);
+                Close_Button.Location = new Point(Close_Button.Location.X - 100, Close_Button.Location.Y);
+                Minimize_Button.Location = new Point(Minimize_Button.Location.X - 100, Close_Button.Location.Y);
             }
         }
 
@@ -86,12 +96,12 @@ namespace VietnamOTP_Service
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(session_number);
+            if (session_number != "") Clipboard.SetText(session_number);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(session_code);
+            if (session_code != "") Clipboard.SetText(session_code);
         }
 
         WebClient client = new WebClient();
@@ -102,7 +112,7 @@ namespace VietnamOTP_Service
         static string uuid_path = Path.GetTempPath() + "token.otp";
 
         string user_id = "";
-        int user_balance = 0;
+        int user_balance = -1;
         int lowest_price = 0;
 
         int session_timer = 0;
@@ -134,10 +144,7 @@ namespace VietnamOTP_Service
                         if (status_code == "-3")
                         {
                             status_label.Text = exam_status + "Out of stock";
-                            if (mode == true)
-                            {
-                                request_ = request(link, mode);
-                            }
+                            if (mode == true) request_ = request(link, mode);
                         }
                         else
                         {
@@ -172,10 +179,7 @@ namespace VietnamOTP_Service
                 }
                 catch
                 {
-                    if (mode == true)
-                    {
-                        request_ = request(link, mode);
-                    }
+                    if (mode == true) request_ = request(link, mode);
                 }
             }
 
@@ -339,7 +343,6 @@ namespace VietnamOTP_Service
                     {
                         textBox3.BackColor = Color.FromArgb(255, 192, 192);
                         textBox3.Text = session_code;
-
                         Clipboard.SetText(session_code);
 
                         session_id = "";
@@ -358,14 +361,8 @@ namespace VietnamOTP_Service
                     }
                     else
                     {
-                        if (session_status == "0")
-                        {
-                            status_title = "Waiting ";
-                        }
-                        else
-                        {
-                            status_title = "Connecting ";
-                        }
+                        if (session_status == "0") status_title = "Waiting ";
+                        else status_title = "Connecting ";
 
                         if (dot_counter++ < 3)
                         {
