@@ -26,9 +26,12 @@ What you need:
 f86d615a10ad420da39f6a4484ff2ad9
 ```
 4. Enter token to `Textbox` and click login
-> Tips: 
-> Click `>` button to expand `number supplier` feature
-> Use list from bottom to select service
+> Tips: Click `>` button to expand `number supplier` feature
+
+5. Use list from bottom to select service
 
 ## Screenshot
-![Screenshot](https://i.paste.pics/0d56c5a74e0c50a5589d8b315c28be69.png)
+1.
+![image](https://user-images.githubusercontent.com/113295259/215234161-20aea146-6ca4-4266-a9f7-fd9e99fdb0b1.png)
+2.
+![image](https://user-images.githubusercontent.com/113295259/215234259-815a22bc-599b-43a6-bef4-d5a49dcadd57.png)
