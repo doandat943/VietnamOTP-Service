@@ -158,6 +158,8 @@
     <None Include="Resources\Close Icon.png" />
     <None Include="Resources\Minimize Icon.png" />
     <None Include="Resources\Logo.png" />
+    <None Include="Resources\vietnam_480px.png" />
+    <None Include="Resources\vietnam_government_480px.png" />
     <Content Include="unnamed.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -65,7 +65,7 @@ namespace VietnamOTP_Service.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Close_Icon {
             get {
-                object obj = ResourceManager.GetObject("Close Icon", resourceCulture);
+                object obj = ResourceManager.GetObject("Close_Icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -85,7 +85,27 @@ namespace VietnamOTP_Service.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Minimize_Icon {
             get {
-                object obj = ResourceManager.GetObject("Minimize Icon", resourceCulture);
+                object obj = ResourceManager.GetObject("Minimize_Icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap vietnam_480px {
+            get {
+                object obj = ResourceManager.GetObject("vietnam_480px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap vietnam_government_480px {
+            get {
+                object obj = ResourceManager.GetObject("vietnam_government_480px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

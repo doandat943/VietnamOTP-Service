@@ -105,8 +105,7 @@ namespace VietnamOTP_Service
         }
 
         WebClient client = new WebClient();
-        ArrayList vn_service_list = new ArrayList();
-        ArrayList ro_service_list = new ArrayList();
+        ArrayList service_list = new ArrayList();
 
         static string exam_status = "Status:  ";
         static string uuid_path = Path.GetTempPath() + "token.otp";
@@ -119,7 +118,6 @@ namespace VietnamOTP_Service
         int session_service = 0;
         string session_id = "";
         string session_number = "";
-        string session_country = "";
         string session_network = "";
         string session_status = "";
         string session_code = "";
@@ -163,12 +161,12 @@ namespace VietnamOTP_Service
                             else if (status_code == "-4")
                             {
                                 checkBox.Checked = false;
-                                status_label.Text = exam_status + "Phone number is not available";
+                                status_label.Text = exam_status + "This number is not available";
                             }
                             else if (status_code == "-101")
                             {
                                 checkBox.Checked = false;
-                                status_label.Text = exam_status + "You can't rent this phone number";
+                                status_label.Text = exam_status + "You can't rent this number";
                             }
                             else
                             {
@@ -194,7 +192,6 @@ namespace VietnamOTP_Service
             session_service = 0;
             session_id = "";
             session_number = "";
-            session_country = "";
             session_network = "";
             session_status = "";
             session_code = "";
@@ -202,22 +199,12 @@ namespace VietnamOTP_Service
             dot_counter = 0;
             dot = "";
 
-            network1.ForeColor = network2.ForeColor = network3.ForeColor = network4.ForeColor = network5.ForeColor = network6.ForeColor = SystemColors.ControlText;
+            cb_viettel.ForeColor = cb_vinaphone.ForeColor = cb_mobifone.ForeColor = cb_vietnamobile.ForeColor = cb_itelecom.ForeColor = cb_wintel.ForeColor = SystemColors.ControlText;
 
             // get selected service
 
             session_service = comboBox1.SelectedIndex;
-            string service_info = "";
-            if (check6 == false)
-            {
-                session_country = "VN";
-                service_info = vn_service_list[session_service].ToString();
-            }
-            else
-            {
-                session_country = "RO";
-                service_info = ro_service_list[session_service].ToString();
-            }
+            string service_info = service_list[session_service].ToString();
 
             Match match = Regex.Match(service_info, "id\":(.*),\"name");
             string service_id = match.Groups[1].Value;
@@ -231,14 +218,7 @@ namespace VietnamOTP_Service
             }
             else
             {
-                if (session_country == "VN")
-                {
-                    request_ = request(request_ + "&network=" + session_network, true);
-                }
-                else
-                {
-                    request_ = request(request_ + "&country=" + session_country, true);
-                }
+                request_ = request(request_ + "&network=" + session_network, true);
             }
 
             // get balance and number
@@ -249,10 +229,8 @@ namespace VietnamOTP_Service
             {
                 Match match1 = Regex.Match(request_, "re_phone_number\":\"(.*)\",\"countryISO");
                 session_number = match1.Groups[1].Value;
-                Match match2 = Regex.Match(request_, "countryISO\":\"(.*)\",\"countryCode");
-                session_country = match2.Groups[1].Value;
-                Match match3 = Regex.Match(request_, "request_id\":(.*),\"balance");
-                session_id = match3.Groups[1].Value;
+                Match match2 = Regex.Match(request_, "request_id\":(.*),\"balance");
+                session_id = match2.Groups[1].Value;
 
                 Clipboard.SetText(session_number);
                 color_network(session_number);
@@ -303,12 +281,12 @@ namespace VietnamOTP_Service
         private void ui_update()
         {
             // check checkbox status
-            check1 = check_state(network1);
-            check2 = check_state(network2);
-            check3 = check_state(network3);
-            check4 = check_state(network4);
-            check5 = check_state(network5);
-            check6 = check_state(network6);
+            check1 = check_state(cb_viettel);
+            check2 = check_state(cb_vinaphone);
+            check3 = check_state(cb_mobifone);
+            check4 = check_state(cb_vietnamobile);
+            check5 = check_state(cb_itelecom);
+            check6 = check_state(cb_wintel);
 
             // check account status
             if (user_id != "")
@@ -393,8 +371,7 @@ namespace VietnamOTP_Service
             {
                 if (comboBox1.Items.Count == 0)
                 {
-                    get_service(comboBox1, vn_service_list, "vn");
-                    get_service(comboBox2, ro_service_list, "ro");
+                    get_service(comboBox1, service_list, "vn");
                 }
                 status_label.Text = exam_status + "Welcome to VietnamOTP";
                 File.WriteAllText(uuid_path, user_id);
@@ -466,24 +443,22 @@ namespace VietnamOTP_Service
 
         private void color_network(string number)
         {
-            if (session_country == "VN")
-            {
-                string prefix = number.Substring(0, 3);
+            string prefix = number.Substring(0, 3);
 
-                if (network1_prefix.Any(prefix.Contains)) network1.ForeColor = Color.FromArgb(236, 38, 43);
-                if (network2_prefix.Any(prefix.Contains)) network2.ForeColor = Color.FromArgb(236, 38, 43);
-                if (network3_prefix.Any(prefix.Contains)) network3.ForeColor = Color.FromArgb(236, 38, 43);
-                if (network4_prefix.Any(prefix.Contains)) network4.ForeColor = Color.FromArgb(236, 38, 43);
-                if (network5_prefix.Any(prefix.Contains)) network5.ForeColor = Color.FromArgb(236, 38, 43);
-            }
-            else network6.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_viettel.Any(prefix.Contains)) cb_viettel.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_vinaphone.Any(prefix.Contains)) cb_vinaphone.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_mobifone.Any(prefix.Contains)) cb_mobifone.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_vietnamobile.Any(prefix.Contains)) cb_vietnamobile.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_itelecom.Any(prefix.Contains)) cb_itelecom.ForeColor = Color.FromArgb(236, 38, 43);
+            if (prefix_wintel.Any(prefix.Contains)) cb_wintel.ForeColor = Color.FromArgb(236, 38, 43);
         }
 
-        string[] network1_prefix = { "032", "033", "034", "035", "036", "037", "038", "039", "086", "096", "097", "098" };
-        string[] network2_prefix = { "081", "082", "083", "084", "085", "088", "091", "094" };
-        string[] network3_prefix = { "070", "076", "077", "078", "079", "089", "090", "093" };
-        string[] network4_prefix = { "052", "056", "058", "092" };
-        string[] network5_prefix = { "087" };
+        string[] prefix_viettel = { "032", "033", "034", "035", "036", "037", "038", "039", "086", "096", "097", "098" };
+        string[] prefix_vinaphone = { "081", "082", "083", "084", "085", "088", "091", "094" };
+        string[] prefix_mobifone = { "070", "076", "077", "078", "079", "089", "090", "093" };
+        string[] prefix_vietnamobile = { "052", "056", "058", "092" };
+        string[] prefix_itelecom = { "087" };
+        string[] prefix_wintel = { "055" };
 
         bool check1;
         bool check2;
@@ -513,117 +488,107 @@ namespace VietnamOTP_Service
                 {
                     b = true;
                     checkBox.CheckState = CheckState.Checked;
-                    if (network6.Checked)
-                    {
-                        network6.CheckState = CheckState.Indeterminate;
-                        comboBox2.Visible = false;
-                    }
                 }
             }
 
             session_network = "";
 
-            if (network1.CheckState == CheckState.Checked)
+            if (cb_viettel.CheckState == CheckState.Checked)
             {
                 session_network += "VIETTEL|";
             }
-            if (network2.CheckState == CheckState.Checked)
+            if (cb_vinaphone.CheckState == CheckState.Checked)
             {
                 session_network += "VINAPHONE|";
             }
-            if (network3.CheckState == CheckState.Checked)
+            if (cb_mobifone.CheckState == CheckState.Checked)
             {
                 session_network += "MOBIFONE|";
             }
-            if (network4.CheckState == CheckState.Checked)
+            if (cb_vietnamobile.CheckState == CheckState.Checked)
             {
                 session_network += "VIETNAMOBILE|";
             }
-            if (network5.CheckState == CheckState.Checked)
+            if (cb_itelecom.CheckState == CheckState.Checked)
             {
                 session_network += "ITELECOM|";
+            }
+            if (cb_wintel.CheckState == CheckState.Checked)
+            {
+                session_network += "WINTEL|";
             }
             return b;
         }
 
-        private void network1_CheckedChanged(object sender, EventArgs e)
+        private void cb_viettel_CheckedChanged(object sender, EventArgs e)
         {
-            if (network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
+            if (cb_vinaphone.CheckState == CheckState.Indeterminate && cb_mobifone.CheckState == CheckState.Indeterminate && cb_vietnamobile.CheckState == CheckState.Indeterminate && cb_itelecom.CheckState == CheckState.Indeterminate && cb_wintel.CheckState == CheckState.Indeterminate)
             {
-                network1.Checked = true;
+                cb_viettel.Checked = true;
             }
             else
             {
-                check1 = CheckBoxMOD(network1, check1);
+                check1 = CheckBoxMOD(cb_viettel, check1);
             }
         }
 
-        private void network2_CheckedChanged(object sender, EventArgs e)
+        private void cb_vinaphone_CheckedChanged(object sender, EventArgs e)
         {
-            if (network1.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
+            if (cb_viettel.CheckState == CheckState.Indeterminate && cb_mobifone.CheckState == CheckState.Indeterminate && cb_vietnamobile.CheckState == CheckState.Indeterminate && cb_itelecom.CheckState == CheckState.Indeterminate && cb_wintel.CheckState == CheckState.Indeterminate)
             {
-                network2.Checked = true;
+                cb_vinaphone.Checked = true;
             }
             else
             {
-                check2 = CheckBoxMOD(network2, check2);
+                check2 = CheckBoxMOD(cb_vinaphone, check2);
             }
         }
 
-        private void network3_CheckedChanged(object sender, EventArgs e)
+        private void cb_mobifone_CheckedChanged(object sender, EventArgs e)
         {
-            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
+            if (cb_viettel.CheckState == CheckState.Indeterminate && cb_vinaphone.CheckState == CheckState.Indeterminate && cb_vietnamobile.CheckState == CheckState.Indeterminate && cb_itelecom.CheckState == CheckState.Indeterminate && cb_wintel.CheckState == CheckState.Indeterminate)
             {
-                network3.Checked = true;
+                cb_mobifone.Checked = true;
             }
             else
             {
-                check3 = CheckBoxMOD(network3, check3);
+                check3 = CheckBoxMOD(cb_mobifone, check3);
             }
         }
 
-        private void network4_CheckedChanged(object sender, EventArgs e)
+        private void cb_vietnamobile_CheckedChanged(object sender, EventArgs e)
         {
-            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network5.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
+            if (cb_viettel.CheckState == CheckState.Indeterminate && cb_vinaphone.CheckState == CheckState.Indeterminate && cb_mobifone.CheckState == CheckState.Indeterminate && cb_itelecom.CheckState == CheckState.Indeterminate && cb_wintel.CheckState == CheckState.Indeterminate)
             {
-                network4.Checked = true;
+                cb_vietnamobile.Checked = true;
             }
             else
             {
-                check4 = CheckBoxMOD(network4, check4);
+                check4 = CheckBoxMOD(cb_vietnamobile, check4);
             }
         }
 
-        private void network5_CheckedChanged(object sender, EventArgs e)
+        private void cb_itelecom_CheckedChanged(object sender, EventArgs e)
         {
-            if (network1.CheckState == CheckState.Indeterminate && network2.CheckState == CheckState.Indeterminate && network3.CheckState == CheckState.Indeterminate && network4.CheckState == CheckState.Indeterminate && network6.CheckState == CheckState.Indeterminate)
+            if (cb_viettel.CheckState == CheckState.Indeterminate && cb_vinaphone.CheckState == CheckState.Indeterminate && cb_mobifone.CheckState == CheckState.Indeterminate && cb_vietnamobile.CheckState == CheckState.Indeterminate && cb_wintel.CheckState == CheckState.Indeterminate)
             {
-                network5.Checked = true;
+                cb_itelecom.Checked = true;
             }
             else
             {
-                check5 = CheckBoxMOD(network5, check5);
+                check5 = CheckBoxMOD(cb_itelecom, check5);
             }
         }
 
-        private void network6_CheckedChanged(object sender, EventArgs e)
+        private void cb_wintel_CheckedChanged(object sender, EventArgs e)
         {
-            if (network6.CheckState == CheckState.Unchecked)
+            if (cb_viettel.CheckState == CheckState.Indeterminate && cb_vinaphone.CheckState == CheckState.Indeterminate && cb_mobifone.CheckState == CheckState.Indeterminate && cb_vietnamobile.CheckState == CheckState.Indeterminate && cb_itelecom.CheckState == CheckState.Indeterminate)
             {
-                if (check6 == false)
-                {
-                    check6 = true;
-                    comboBox2.Visible = true;
-                    network6.CheckState = CheckState.Checked;
-                    network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Indeterminate;
-                }
-                else
-                {
-                    check6 = false;
-                    comboBox2.Visible = false;
-                    network6.CheckState = CheckState.Indeterminate;
-                    network1.CheckState = network2.CheckState = network3.CheckState = network4.CheckState = network5.CheckState = CheckState.Checked;
-                }
+                cb_wintel.Checked = true;
+            }
+            else
+            {
+                check6 = CheckBoxMOD(cb_wintel, check6);
             }
         }
 
@@ -637,7 +602,23 @@ namespace VietnamOTP_Service
             else
             {
                 if (session_id == "") textBox2.Text = "Number";
+                else textBox2.Text = "0" + String.Format("{0:####-###-###}", Convert.ToInt32(session_number));
                 textBox2.Enabled = false;
+            }
+        }
+
+        Bitmap vietnam_flag = Properties.Resources.vietnam_480px;
+        Bitmap vietnam_government_flag = Properties.Resources.vietnam_government_480px;
+
+        private void Country_Icon_Click(object sender, EventArgs e)
+        {
+            if (Country_Icon.Image == vietnam_flag)
+            {
+                Country_Icon.Image = vietnam_government_flag;
+            }
+            else
+            {
+                Country_Icon.Image = vietnam_flag;
             }
         }
     }
